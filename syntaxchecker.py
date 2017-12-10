@@ -1,7 +1,5 @@
 from antlr4 import *
 from antlr4.error.ErrorListener import ErrorListener
-import sys
-sys.path.append("lexerparser")
 from DOTLexer import DOTLexer
 from DOTParser import DOTParser
 
