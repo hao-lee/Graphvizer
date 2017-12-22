@@ -17,7 +17,12 @@ class UserEditListener(sublime_plugin.EventListener):
 		# Get the contents of the whole file
 		region = sublime.Region(0, view.size())
 		contents = view.substr(region)
-		syntaxchecker.check(contents)
+		# Check if the syntax is valid
+		syntax_is_valid = syntaxchecker.check(contents)
+		if syntax_is_valid:
+			pass
+		else:
+			return
 
 #
 class GraphvizerCommand(sublime_plugin.TextCommand):
