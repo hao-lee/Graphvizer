@@ -13,11 +13,10 @@ from lexerparser.DOTParser import DOTParser
 class DOTErrorListener(ErrorListener):
 	def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):
 		if isinstance(recognizer, DOTLexer):
-			print("Lexical Error", end=': ')
+			who = "Lexical Error:"
 		elif isinstance(recognizer, DOTParser):
-			print("Syntactic Error", end=': ')
-		print("line %d, column %d: %s" %(line, column, msg))
-		raise Exception()
+			who = "Syntactic Error:"
+		raise Exception("%s line %d, column %d: %s" %(who, line, column, msg))
 
 	def reportAmbiguity(self, recognizer, dfa, startIndex, stopIndex, exact, ambigAlts, configs):
 		pass
@@ -42,9 +41,9 @@ def check(dot):
 
 	try:
 		tree = parser.graph()
-	except:
-		return False
-	return True
+		return True, "No Error"
+	except Exception as e:
+		return False, str(e)
 
 if __name__ == '__main__':
 	dot = '''

@@ -18,11 +18,12 @@ class UserEditListener(sublime_plugin.EventListener):
 		region = sublime.Region(0, view.size())
 		contents = view.substr(region)
 		# Check if the syntax is valid
-		syntax_is_valid = syntaxchecker.check(contents)
+		syntax_is_valid, error = syntaxchecker.check(contents)
 		if syntax_is_valid:
 			pass
 		else:
-			return
+			print(error)
+
 
 #
 class GraphvizerCommand(sublime_plugin.TextCommand):
