@@ -22,7 +22,8 @@ class UserEditListener(sublime_plugin.EventListener):
 		if syntax_is_valid:
 			pass
 		else:
-			print(error)
+			window = sublime.active_window()
+			window.run_command("print_to_graphvizer_panel", {"text": error})
 
 
 #
