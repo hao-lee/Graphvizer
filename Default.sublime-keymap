@@ -1,0 +1,7 @@
+[
+	{
+		"keys": ["ctrl+shift+g"],
+		"command": "show_panel",
+		"args": {"panel": "output.graphvizer_panel"}
+	}
+]
