@@ -14,4 +14,5 @@ class PrintToGraphvizerPanelCommand(sublime_plugin.WindowCommand):
 		dt_str = dt.strftime("%Y-%m-%d %H:%M:%S")
 		text =  "[%s] - %s\n" %(dt_str, text)
 		self.view.run_command("append", {"characters": text})
+		self.view.run_command("move_to", {"to": "eof"})
 		#self.window.run_command("show_panel", {"panel": "output.graphvizer_panel"})
