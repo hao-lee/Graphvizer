@@ -23,6 +23,7 @@ def get_image_file():
 class UserEditListener(sublime_plugin.EventListener):
 
 	def __init__(self):
+		super(UserEditListener, self).__init__()
 		# Start worker thread
 		self.queue = queue.Queue(maxsize=9)
 		thread = threading.Thread(target=self.dot_thread, daemon=True)
