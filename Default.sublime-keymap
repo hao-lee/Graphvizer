@@ -1,7 +1,6 @@
 [
 	{
 		"keys": ["ctrl+shift+g"],
-		"command": "show_panel",
-		"args": {"panel": "output.graphvizer_panel"}
+		"command": "graphvizer_open_image"
 	}
 ]
