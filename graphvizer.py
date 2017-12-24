@@ -23,8 +23,6 @@ def get_image_file():
 class UserEditListener(sublime_plugin.EventListener):
 
 	def __init__(self):
-		# Get the active window as current main window
-		self.window = sublime.active_window()
 		# Start worker thread
 		self.queue = queue.Queue(maxsize=9)
 		thread = threading.Thread(target=self.dot_thread, daemon=True)
@@ -73,7 +71,9 @@ class UserEditListener(sublime_plugin.EventListener):
 			self.print(error)
 
 	def print(self, text):
-		self.window.run_command("graphvizer_print_to_panel", {"text": text})
+		# Get the active window as current main window
+		current_window = sublime.active_window()
+		current_window.run_command("graphvizer_print_to_panel", {"text": text})
 
 
 # Open image file in a new window
