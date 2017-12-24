@@ -1,6 +1,10 @@
 [
 	{
 		"keys": ["ctrl+shift+g"],
-		"command": "graphvizer_open_image"
+		"command": "graphvizer_open_image",
+		"context":
+		[
+			{"key": "selector", "operator": "equal", "operand": "source.dot"}
+		]
 	}
 ]
