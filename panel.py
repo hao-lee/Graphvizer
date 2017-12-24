@@ -4,7 +4,7 @@ from datetime import datetime
 
 
 # Use this class as a window command to print text to graphvizer_panel
-class PrintToGraphvizerPanelCommand(sublime_plugin.WindowCommand):
+class GraphvizerPrintToPanelCommand(sublime_plugin.WindowCommand):
 	view = None
 	def run(self, text):
 		if self.view is None:

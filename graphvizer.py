@@ -65,7 +65,7 @@ class UserEditListener(sublime_plugin.EventListener):
 			self.print(error)
 
 	def print(self, text):
-		self.window.run_command("print_to_graphvizer_panel", {"text": text})
+		self.window.run_command("graphvizer_print_to_panel", {"text": text})
 
 
 #
