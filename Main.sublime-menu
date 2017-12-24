@@ -1,0 +1,20 @@
+[
+	{
+		"id": "tools",
+		"children":
+		[
+			{
+				"id": "graphvizer",
+				"caption": "Graphvizer",
+				"children":
+				[
+					{
+						"caption": "Show Graphvizer Panel",
+						"command": "show_panel",
+						"args": {"panel": "output.graphvizer_panel"}
+					}
+				]
+			}
+		]
+	}
+ ]
