@@ -10,6 +10,15 @@ import subprocess
 import tempfile
 
 
+def get_dot_file():
+	tempdir = tempfile.gettempdir()
+	return os.path.join(tempdir, "graphvizer.dot")
+
+def get_image_file():
+	tempdir = tempfile.gettempdir()
+	return os.path.join(tempdir, "graphvizer.png")
+
+
 # Trigged when user input text
 class UserEditListener(sublime_plugin.EventListener):
 
@@ -29,11 +38,10 @@ class UserEditListener(sublime_plugin.EventListener):
 			subprocess can't read it directly on Windows. Using a regular file is a
 			good choice.
 			'''
-			tempdir = tempfile.gettempdir()
-			dot_file = os.path.join(tempdir, "graphvizer.dot")
+			dot_file = get_dot_file()
 			with open(file=dot_file, mode="w", encoding="utf-8") as fd:
 				fd.write(contents)
-			image_file = os.path.join(tempdir, "graphvizer.png")
+			image_file = get_image_file()
 			cmd = ["dot", dot_file, "-Tpng", "-o", image_file]
 			# For Windows, we must use startupinfo to hide the console window.
 			startupinfo = None
