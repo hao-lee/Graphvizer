@@ -74,3 +74,17 @@ class UserEditListener(sublime_plugin.EventListener):
 
 	def print(self, text):
 		self.window.run_command("graphvizer_print_to_panel", {"text": text})
+
+
+# Open image file in a new window
+class GraphvizerOpenImageCommand(sublime_plugin.WindowCommand):
+
+	def run(self):
+		image_file = get_image_file()
+		sublime.run_command("new_window")
+		image_window = sublime.active_window()
+		image_window.open_file(image_file)
+		image_window.set_menu_visible(False)
+		image_window.set_tabs_visible(False)
+		image_window.set_minimap_visible(False)
+		image_window.set_status_bar_visible(False)
