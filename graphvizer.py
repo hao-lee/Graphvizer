@@ -65,11 +65,12 @@ class UserEditListener(sublime_plugin.EventListener):
 		region = sublime.Region(0, view.size())
 		contents = view.substr(region)
 		# Check if the syntax is valid
-		syntax_is_valid, error = syntaxchecker.check(contents)
+		syntax_is_valid, log = syntaxchecker.check(contents)
 		if syntax_is_valid:
 			self.queue.put(contents, block=True, timeout=None)
+			self.print(log)
 		else:
-			self.print(error)
+			self.print(log)
 
 	def print(self, text):
 		# Get the active window as current main window

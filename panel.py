@@ -14,5 +14,6 @@ class GraphvizerPrintToPanelCommand(sublime_plugin.WindowCommand):
 		dt = datetime.now()
 		dt_str = dt.strftime("%Y-%m-%d %H:%M:%S")
 		text =  "[%s] - %s\n" %(dt_str, text)
-		self.view.run_command("append", {"characters": text})
+		self.view.run_command("select_all")
+		self.view.run_command("insert", {"characters": text})
 		self.view.run_command("move_to", {"to": "eof"})

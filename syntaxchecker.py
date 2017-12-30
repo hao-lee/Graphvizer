@@ -41,7 +41,7 @@ def check(dot):
 
 	try:
 		tree = parser.graph()
-		return True, "No Error"
+		return True, "No error occurred"
 	except Exception as e:
 		return False, str(e)
 
