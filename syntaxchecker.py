@@ -1,7 +1,7 @@
-from antlr4 import *
-from antlr4.error.ErrorListener import ErrorListener
-from lexerparser.DOTLexer import DOTLexer
-from lexerparser.DOTParser import DOTParser
+from .antlr4 import *
+from .antlr4.error.ErrorListener import ErrorListener
+from .lexerparser.DOTLexer import DOTLexer
+from .lexerparser.DOTParser import DOTParser
 
 
 # Report lexical and syntactic errors

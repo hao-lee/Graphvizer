@@ -1,10 +1,8 @@
 import sublime
 import sublime_plugin
 import functools
-import sys, os
-top_path = os.path.dirname(__file__) # Plugin directory
-sys.path.append(top_path)
-import syntaxchecker
+import os
+from . import syntaxchecker
 import threading, queue
 import subprocess
 import tempfile
