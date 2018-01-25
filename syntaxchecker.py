@@ -1,8 +1,3 @@
-import sys, os
-top_path = os.path.dirname(__file__)
-sys.path.append(os.path.join(top_path, 'enum')) # For library used by antlr4
-sys.path.append(os.path.join(top_path, 'typing')) # For library used by antlr4
-
 from antlr4 import *
 from antlr4.error.ErrorListener import ErrorListener
 from lexerparser.DOTLexer import DOTLexer
