@@ -1,6 +1,6 @@
 # Graphvizer
 
-`Graphvizer` is a `Graphviz` plugin for Sublime Text 3. It can simplify the process of writing `dot` files. You just need to edit your file and this plugin will render the image and refresh it in real time. If the syntax is invalid, the plugin will show you some error message.
+`Graphvizer` is a `Graphviz` plugin for Sublime Text 3. It can simplify the process of writing `dot` files. You just need to edit your file and this plugin will render the image and refresh it in real time. If the syntax is invalid, the plugin will show you some error messages.
 
 # Features
 
@@ -9,6 +9,8 @@
 * Error message prompting
 
 # Usage
+
+**Note: Please ensure the file syntax is set to `Graphviz (DOT)`. You can do this by `View -> Syntax` or clicking the bottom right corner of Sublime Text window.**
 
 * `ctrl+shift+g`: Open image window
 
