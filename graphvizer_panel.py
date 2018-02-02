@@ -16,4 +16,3 @@ class GraphvizerPrintToPanelCommand(sublime_plugin.WindowCommand):
 		text =  "[%s] - %s\n" %(dt_str, text)
 		self.view.run_command("select_all")
 		self.view.run_command("insert", {"characters": text})
-		self.view.run_command("move_to", {"to": "eof"})
