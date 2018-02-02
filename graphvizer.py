@@ -55,7 +55,13 @@ class UserEditListener(sublime_plugin.EventListener):
 				self.print(stderr)
 
 	def on_modified(self, view):
-		# Detect language. Only process DOT file.
+		'''
+		Detect language. Only process DOT file.
+		self.print() can only be called after this detection.
+		Otherwise, the panel's modification will also trigger the on_modified
+		function, so the plugin will fall into a infinite recursion and the
+		plugin_host will crash.
+		'''
 		file_syntax = view.settings().get('syntax')
 		if "DOT.sublime-syntax" not in file_syntax:
 			return
