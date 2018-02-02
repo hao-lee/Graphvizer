@@ -9,6 +9,10 @@
 				"children":
 				[
 					{
+						"caption": "Open Rendered Image",
+						"command": "graphvizer_open_image"
+					},
+					{
 						"caption": "Show Graphvizer Panel",
 						"command": "show_panel",
 						"args": {"panel": "output.graphvizer_panel"}
