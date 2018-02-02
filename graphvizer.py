@@ -26,6 +26,9 @@ class UserEditListener(sublime_plugin.EventListener):
 		self.queue = queue.Queue(maxsize=9)
 		thread = threading.Thread(target=self.dot_thread, daemon=True)
 		thread.start()
+		# Load settings
+		settings = sublime.load_settings("Graphvizer.sublime-settings")
+		self.dot_cmd_path = settings.get("dot_cmd_path")
 
 	def dot_thread(self):
 		while True:
@@ -39,7 +42,7 @@ class UserEditListener(sublime_plugin.EventListener):
 			with open(file=dot_file, mode="w", encoding="utf-8") as fd:
 				fd.write(contents)
 			image_file = get_image_file()
-			cmd = ["dot", dot_file, "-Tpng", "-o", image_file]
+			cmd = [self.dot_cmd_path, dot_file, "-Tpng", "-o", image_file]
 			# For Windows, we must use startupinfo to hide the console window.
 			startupinfo = None
 			if os.name == "nt":

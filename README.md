@@ -65,7 +65,7 @@ Using the Sublime Text 3 menu `Preferences -> Browse Packages...` to find out yo
 
 # To-Do List
 
-- [ ] Configure the `dot` command path in `Settings`.
+- [x] Configure the `dot` command path in `Settings`.
 - [ ] Key Bindings for Window/Linux/OSX separately.
 - [ ] Display image in another layout instead of a new window.
 * For other features, please open an issue.
