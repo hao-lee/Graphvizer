@@ -71,8 +71,8 @@ class UserEditListener(sublime_plugin.EventListener):
 		# Check if the syntax is valid
 		syntax_is_valid, log = syntaxchecker.check(contents)
 		if syntax_is_valid:
-			self.queue.put(contents, block=True, timeout=None)
 			self.print(log)
+			self.queue.put(contents, block=True, timeout=None)
 		else:
 			self.print(log)
 
