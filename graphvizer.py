@@ -26,9 +26,8 @@ class UserEditListener(sublime_plugin.EventListener):
 		self.queue = queue.Queue(maxsize=9)
 		thread = threading.Thread(target=self.dot_thread, daemon=True)
 		thread.start()
-		# Load settings
-		settings = sublime.load_settings("Graphvizer.sublime-settings")
-		self.dot_cmd_path = settings.get("dot_cmd_path")
+		# Initialized in on_modified
+		self.dot_cmd_path = None
 
 	def dot_thread(self):
 		while True:
@@ -68,6 +67,12 @@ class UserEditListener(sublime_plugin.EventListener):
 		file_syntax = view.settings().get('syntax')
 		if "DOT.sublime-syntax" not in file_syntax:
 			return
+
+		# Load settings
+		if self.dot_cmd_path is None:
+			settings = sublime.load_settings("Graphvizer.sublime-settings")
+			self.dot_cmd_path = settings.get("dot_cmd_path")
+
 		# Get the contents of the whole file
 		region = sublime.Region(0, view.size())
 		contents = view.substr(region)
