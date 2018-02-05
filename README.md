@@ -64,7 +64,7 @@ Download from here: https://graphviz.gitlab.io/download/. The installation is ve
 	// "dot_cmd_path" is the path of dot command. Here are some examples.
 	// For Windows: "D:\\Graphviz\\bin\\dot.exe"
 	// For Linux: "/usr/bin/dot"
-	// For Linux: "/usr/bin/dot"
+	// For OSX: "/usr/bin/dot"
 	// If you have added this path to the PATH environment variable, you can
 	// use "dot" instead of the full absolute path.
 	"dot_cmd_path": "dot"
