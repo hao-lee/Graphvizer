@@ -30,7 +30,7 @@ If you want to change the default key bindings, use `Preference -> Package Setti
 
 # Why do I create this plugin?
 
-`Graphviz` is an awesome visualization tool, but it's very inconvenient to write a dot file. I have to use `dot file.dot -Tpng -o file.png` to render image manually again and again and I can't know whether my syntax is correct or not instantly. `Atom` has a good plugin called `GraphViz preview+` which is excellent, but I don't find any plugin like it on `packagecontrol.io`. Finally, I create `Graphvizer`.
+`Graphviz` is an awesome visualization tool, but it's very inconvenient to write a dot file by hand. I have to use `dot file.dot -Tpng -o file.png` to render image manually again and again and I don't know whether the syntax is correct or not instantly. `Atom` editor has an excellent plugin called `GraphViz preview+`, but I can't find any plugins like this on `packagecontrol.io`. Finally, I create `Graphvizer`.
 
 # Installation
 
