@@ -85,12 +85,27 @@ Bring up the Command Palette (`Control+Shift+P` on Linux/Windows, `Command+Shift
 
 Using the Sublime Text 3 menu `Preferences -> Browse Packages...` to find out your package directory path. On my `Windows 7`, the path is `D:\Sublime Text 3\Data\Packages`. Move the entire `Graphvizer` directory into the package directory. Done!
 
+# Other Configurations
+
+### Set timeout for `dot` command
+
+If you are editing a very large graph, the `dot` command may need a long time to complete and your CPU may be exhausted. For this reason, I set a timeout for `dot` command and it will be terminated if it takes too long to complete. You can change the timeout if you want. Open `Preference -> Package Settings -> Graphvizer -> Settings - User`. Copy the following content to the opened file and set `dot_timeout` as needed.
+
+```
+{
+	// If the dot command takes more than `dot_timeout` seconds, it will be
+	// terminated. The default value is 6 seconds.
+	"dot_timeout": 6
+}
+```
+
 # To-Do List
 
 - [x] Configure the `dot` command path in `Settings`.
 - [x] Key Bindings for Window/Linux/OSX separately.
 - [x] Add `Preference -> Package Settings` menu items to custom user settings.
 - [ ] Display image in another layout instead of a new window.
+- [x] Set timeout for `dot` command.
 * For other features, please open an issue.
 
 # LICENSE
