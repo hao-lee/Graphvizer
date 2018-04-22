@@ -54,7 +54,12 @@ class UserEditListener(sublime_plugin.EventListener):
 			process = subprocess.Popen(cmd, stdout=subprocess.PIPE,
 											stderr=subprocess.PIPE,
 											startupinfo=startupinfo)
-			stdout, stderr = process.communicate()
+			# Terminate the dot process if it takes too long to complete.
+			try:
+				stdout, stderr = process.communicate(timeout=6)
+			except TimeoutExpired:
+				process.kill()
+				stdout, stderr = process.communicate()
 			if len(stdout) != 0:
 				self.print(stdout)
 			if len(stderr) != 0:
