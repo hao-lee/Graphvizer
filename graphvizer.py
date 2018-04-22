@@ -30,8 +30,9 @@ class UserEditListener(sublime_plugin.EventListener):
 		# Start worker thread for graph rendering
 		dot_thread = threading.Thread(target=self.dot_thread, daemon=True)
 		dot_thread.start()
-		# Initialized in on_modified
+		# These variables will be initialized in on_modified
 		self.dot_cmd_path = None
+		self.dot_timeout = None
 
 	def dot_thread(self):
 		while True:
@@ -56,7 +57,7 @@ class UserEditListener(sublime_plugin.EventListener):
 											startupinfo=startupinfo)
 			# Terminate the dot process if it takes too long to complete.
 			try:
-				stdout, stderr = process.communicate(timeout=6)
+				stdout, stderr = process.communicate(timeout=self.dot_timeout)
 			except TimeoutExpired:
 				process.kill()
 				stdout, stderr = process.communicate()
@@ -93,6 +94,9 @@ class UserEditListener(sublime_plugin.EventListener):
 		if self.dot_cmd_path is None:
 			settings = sublime.load_settings("Graphvizer.sublime-settings")
 			self.dot_cmd_path = settings.get("dot_cmd_path")
+		if self.dot_timeout is None:
+			settings = sublime.load_settings("Graphvizer.sublime-settings")
+			self.dot_timeout = settings.get("dot_timeout")
 
 		# Get the contents of the whole file
 		region = sublime.Region(0, view.size())

@@ -5,5 +5,8 @@
 	// For OSX: "/usr/bin/dot"
 	// If you have added this path to the PATH environment variable, you can
 	// use "dot" instead of the full absolute path.
-	"dot_cmd_path": "dot"
+	"dot_cmd_path": "dot",
+	// If the dot command takes more than `dot_timeout` seconds, it will be
+	// terminated. The default value is 6 seconds.
+	"dot_timeout": 6
 }
