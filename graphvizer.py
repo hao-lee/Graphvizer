@@ -22,16 +22,20 @@ class UserEditListener(sublime_plugin.EventListener):
 
 	def __init__(self):
 		super(UserEditListener, self).__init__()
-		# Start worker thread
-		self.queue = queue.Queue(maxsize=9)
-		thread = threading.Thread(target=self.dot_thread, daemon=True)
-		thread.start()
+		self.queue_syntaxchecking = queue.Queue(maxsize=9) # For syntax checking
+		self.queue_rendering = queue.Queue(maxsize=9) # For graph rendering
+		# Start worker thread for syntax checking
+		syntax_thread = threading.Thread(target=self.syntax_thread, daemon=True)
+		syntax_thread.start()
+		# Start worker thread for graph rendering
+		dot_thread = threading.Thread(target=self.dot_thread, daemon=True)
+		dot_thread.start()
 		# Initialized in on_modified
 		self.dot_cmd_path = None
 
 	def dot_thread(self):
 		while True:
-			contents = self.queue.get(block=True, timeout=None)
+			contents = self.queue_rendering.get(block=True, timeout=None)
 			'''
 			For purpose of cross-platform, we can't use TemporaryFile class because
 			subprocess can't read it directly on Windows. Using a regular file is a
@@ -56,6 +60,18 @@ class UserEditListener(sublime_plugin.EventListener):
 			if len(stderr) != 0:
 				self.print(stderr)
 
+	def syntax_thread(self):
+		while True:
+			contents = self.queue_syntaxchecking.get(block=True, timeout=None)
+			# Check if the syntax is valid
+			syntax_is_valid, log = syntaxchecker.check(contents)
+			if syntax_is_valid:
+				self.print(log)
+				# Put the valid contents into the queue for graph rendering
+				self.queue_rendering.put(contents, block=True, timeout=None)
+			else:
+				self.print(log)
+
 	def on_modified(self, view):
 		'''
 		Detect language. Only process DOT file.
@@ -76,13 +92,8 @@ class UserEditListener(sublime_plugin.EventListener):
 		# Get the contents of the whole file
 		region = sublime.Region(0, view.size())
 		contents = view.substr(region)
-		# Check if the syntax is valid
-		syntax_is_valid, log = syntaxchecker.check(contents)
-		if syntax_is_valid:
-			self.print(log)
-			self.queue.put(contents, block=True, timeout=None)
-		else:
-			self.print(log)
+		# Put the contents into the queue for syntax checking
+		self.queue_syntaxchecking.put(contents, block=True, timeout=None)
 
 	def print(self, text):
 		# Get the active window as current main window
