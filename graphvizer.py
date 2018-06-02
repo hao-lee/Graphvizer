@@ -115,10 +115,19 @@ class GraphvizerOpenImageCommand(sublime_plugin.WindowCommand):
 
 	def __init__(self, window):
 		super(GraphvizerOpenImageCommand, self).__init__(window)
+		self.show_image_with = None
 		self.image_window = None
+		self.image_sheet = None
 
 	def run(self):
-		self.open_or_close_image_window()
+		if self.show_image_with is None:
+			settings = sublime.load_settings("Graphvizer.sublime-settings")
+			self.show_image_with = settings.get("show_image_with")
+
+		if self.show_image_with == "window":
+			self.open_or_close_image_window()
+		else:
+			self.open_or_close_image_layout()
 
 	def open_or_close_image_window(self):
 		# Check if image has been opened
@@ -134,3 +143,25 @@ class GraphvizerOpenImageCommand(sublime_plugin.WindowCommand):
 		else:
 			self.image_window.run_command("close_window")
 			self.image_window = None
+
+	def open_or_close_image_layout(self):
+		if self.image_sheet is None:
+			image_file = get_image_file()
+			self.window.set_layout({
+				"cols": [0.0, 0.5, 1.0],
+				"rows": [0.0, 1.0],
+				"cells": [[0, 0, 1, 1], [1, 0, 2, 1]]
+			})
+			self.window.focus_group(1)
+			self.window.open_file(image_file)
+			self.window.focus_group(0)
+			self.image_sheet = self.window.active_sheet_in_group(1)
+		else:
+			self.window.focus_group(1)
+			self.window.run_command("close_file")
+			self.image_sheet = None
+			self.window.set_layout({
+				"cols": [0.0, 1.0],
+				"rows": [0.0, 1.0],
+				"cells": [[0, 0, 1, 1]]
+			})
