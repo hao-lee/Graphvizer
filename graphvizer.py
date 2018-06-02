@@ -35,6 +35,7 @@ class UserEditListener(sublime_plugin.EventListener):
 		self.dot_timeout = None
 
 	def dot_thread(self):
+		dot_file = get_dot_file()
 		while True:
 			contents = self.queue_rendering.get(block=True, timeout=None)
 			'''
@@ -42,7 +43,6 @@ class UserEditListener(sublime_plugin.EventListener):
 			subprocess can't read it directly on Windows. Using a regular file is a
 			good choice.
 			'''
-			dot_file = get_dot_file()
 			with open(file=dot_file, mode="w", encoding="utf-8") as fd:
 				fd.write(contents)
 			image_file = get_image_file()
