@@ -1,0 +1,3 @@
+[Improved] Move the syntax checking to a new thread
+[Improved] Terminate the dot process if it takes too long to complete
+[Improved] Configure the dot timeout in settings file

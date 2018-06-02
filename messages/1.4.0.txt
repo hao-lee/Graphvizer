@@ -1,0 +1,3 @@
+[New] Being able to show image in a separated layout
+[Improved] Close image window when pressing ctrl+shift+g again
+[Improved] Calling get_dot_file() only once during while loop

@@ -1,0 +1,18 @@
+Graphvizer is a Graphviz plugin for Sublime Text 3. It can make your experience more pleasant when editing a dot language file. You just need to edit your file at the speed of thought and this plugin will render the image and refresh it in real time. If the syntax is invalid, the plugin will show you some error messages.
+
+- Features
+Real-time rendering
+Real-time syntax checking
+Error message prompting
+
+- Homepage
+
+https://github.com/hao-lee/Graphvizer
+
+- Report Bug
+
+https://github.com/hao-lee/Graphvizer/issues
+
+- Email
+
+haolee.swjtu@gmail.com
