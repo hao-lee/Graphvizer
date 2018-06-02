@@ -99,12 +99,27 @@ If you are editing a very large graph, the `dot` command may need a long time to
 }
 ```
 
+### Show the image in a separated layout
+
+By default, the plugin will show the image in a new window. This is flexible in most cases, especially when you have two monitors.
+If you do like use a separated layout to show the image, you can change the default configuration. Open `Preference -> Package Settings -> Graphvizer -> Settings - User`. Copy the following content to the opened file and set "show_image_with" to "layout" and then save it. (You may need to restart Sublime Text 3 to take effects.)
+
+```
+{
+	// "show_image_with" controls how to show the image.
+	// The default value is "window", so the image will be shown in a new
+	// window by default. If you want to show it in a new layout instead,
+	// change the following value to "layout".
+	"show_image_with": "window"
+}
+```
+
 # To-Do List
 
 - [x] Configure the `dot` command path in `Settings`.
 - [x] Key Bindings for Window/Linux/OSX separately.
 - [x] Add `Preference -> Package Settings` menu items to custom user settings.
-- [ ] Display image in another layout instead of a new window.
+- [x] Being able to show the image in a separated layout.
 - [x] Set timeout for `dot` command.
 * For other features, please open an issue.
 
