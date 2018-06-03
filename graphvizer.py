@@ -116,8 +116,6 @@ class GraphvizerOpenImageCommand(sublime_plugin.WindowCommand):
 	def __init__(self, window):
 		super(GraphvizerOpenImageCommand, self).__init__(window)
 		self.show_image_with = None
-		self.image_window = None
-		self.image_sheet = None
 
 	def run(self):
 		if self.show_image_with is None:
@@ -125,43 +123,27 @@ class GraphvizerOpenImageCommand(sublime_plugin.WindowCommand):
 			self.show_image_with = settings.get("show_image_with")
 
 		if self.show_image_with == "window":
-			self.open_or_close_image_window()
+			self.open_image_window()
 		else:
-			self.open_or_close_image_layout()
+			self.open_image_layout()
 
-	def open_or_close_image_window(self):
-		# Check if image has been opened
-		if self.image_window is None:
-			image_file = get_image_file()
-			sublime.run_command("new_window")
-			self.image_window = sublime.active_window()
-			self.image_window.open_file(image_file)
-			self.image_window.set_menu_visible(False)
-			self.image_window.set_tabs_visible(False)
-			self.image_window.set_minimap_visible(False)
-			self.image_window.set_status_bar_visible(False)
-		else:
-			self.image_window.run_command("close_window")
-			self.image_window = None
+	def open_image_window(self):
+		image_file = get_image_file()
+		sublime.run_command("new_window")
+		image_window = sublime.active_window()
+		image_window.open_file(image_file)
+		image_window.set_menu_visible(False)
+		image_window.set_tabs_visible(False)
+		image_window.set_minimap_visible(False)
+		image_window.set_status_bar_visible(False)
 
-	def open_or_close_image_layout(self):
-		if self.image_sheet is None:
-			image_file = get_image_file()
-			self.window.set_layout({
-				"cols": [0.0, 0.5, 1.0],
-				"rows": [0.0, 1.0],
-				"cells": [[0, 0, 1, 1], [1, 0, 2, 1]]
-			})
-			self.window.focus_group(1)
-			self.window.open_file(image_file)
-			self.window.focus_group(0)
-			self.image_sheet = self.window.active_sheet_in_group(1)
-		else:
-			self.window.focus_group(1)
-			self.window.run_command("close_file")
-			self.image_sheet = None
-			self.window.set_layout({
-				"cols": [0.0, 1.0],
-				"rows": [0.0, 1.0],
-				"cells": [[0, 0, 1, 1]]
-			})
+	def open_image_layout(self):
+		image_file = get_image_file()
+		self.window.set_layout({
+			"cols": [0.0, 0.5, 1.0],
+			"rows": [0.0, 1.0],
+			"cells": [[0, 0, 1, 1], [1, 0, 2, 1]]
+		})
+		self.window.focus_group(1)
+		self.window.open_file(image_file)
+		self.window.focus_group(0)
