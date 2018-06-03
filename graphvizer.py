@@ -113,12 +113,24 @@ class UserEditListener(sublime_plugin.EventListener):
 # Open image file in a new window
 class GraphvizerOpenImageCommand(sublime_plugin.WindowCommand):
 
+	def __init__(self, window):
+		super(GraphvizerOpenImageCommand, self).__init__(window)
+		self.image_window = None
+
 	def run(self):
-		image_file = get_image_file()
-		sublime.run_command("new_window")
-		image_window = sublime.active_window()
-		image_window.open_file(image_file)
-		image_window.set_menu_visible(False)
-		image_window.set_tabs_visible(False)
-		image_window.set_minimap_visible(False)
-		image_window.set_status_bar_visible(False)
+		self.open_or_close_image_window()
+
+	def open_or_close_image_window(self):
+		# Check if image has been opened
+		if self.image_window is None:
+			image_file = get_image_file()
+			sublime.run_command("new_window")
+			self.image_window = sublime.active_window()
+			self.image_window.open_file(image_file)
+			self.image_window.set_menu_visible(False)
+			self.image_window.set_tabs_visible(False)
+			self.image_window.set_minimap_visible(False)
+			self.image_window.set_status_bar_visible(False)
+		else:
+			self.image_window.run_command("close_window")
+			self.image_window = None
