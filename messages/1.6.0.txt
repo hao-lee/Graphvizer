@@ -1,0 +1,1 @@
+[New] Set the image path using settings file
