@@ -91,7 +91,12 @@ The default configurations are as follows. If you want to change some configurat
 	// The default value is "window", so the image will be shown in a new
 	// window by default. If you want to show it in a new layout instead,
 	// change the following value to "layout".
-	"show_image_with": "window"
+	"show_image_with": "window",
+	// "image_dir" controls where the image is saved. If the value is "",
+	// system temporary directory is used. You can set it to other directory.
+	// Example for Windows: "E:\\homework\\image\\"
+	// Example for Linux/OSX: "/home/haolee/image/"
+	"image_dir": ""
 }
 ```
 
@@ -107,6 +112,13 @@ If you are editing a very large graph, the `dot` command may need a long time to
 
 By default, the plugin will show the image in a new window. This is flexible in most cases, especially when you have two monitors.
 If you do like use a separated layout to show the image, change the value of `show_image_with` from `window` to `layout` and save it. (You may need to restart Sublime Text 3 to take effects.)
+
+### Set the image directory
+
+By default, the generated image will be saved in system temporary directory. If you want to change this default location, you can set `"image_dir"` according to your needs.
+
+Example for Windows: `"E:\\homework\\image\\"`
+Example for Linux/OSX: `"/home/haolee/image/"`
 
 # Key Bindings
 
@@ -143,6 +155,7 @@ The default key bindings are as follows. If you want to change the default key b
 - [x] Add `Preference -> Package Settings` menu items to custom user settings.
 - [x] Being able to show the image in a separated layout.
 - [x] Set timeout for `dot` command.
+- [x] Being able to set the image directory.
 * For other features, please open an issue.
 
 # LICENSE
