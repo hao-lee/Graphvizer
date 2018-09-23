@@ -53,7 +53,7 @@ Download from here: https://graphviz.gitlab.io/download/. The installation is ve
 
 > Type `dot -V` in Windows `cmd` window and hit enter. If everything is OK, you will see the version info of `Graphviz`.
 
-**Method 2:** Specify the path of `dot` explicitly with plugin settings file. See the full details in [Configuration](#Configuration) part.
+**Method 2:** Specify the path of `dot` explicitly with plugin settings file. See the full details in [Configurations](#configurations) part.
 
 ## 2. Installing `Graphvizer`
 
@@ -102,16 +102,16 @@ The default configurations are as follows. If you want to change some configurat
 
 ### Set `dot` path
 
-If you want to specify the path of you `dot` command, please set `dot_cmd_path` according to your system. This configuration is useful on Windows.
+If you want to specify the path of you `dot` command, please set `"dot_cmd_path"` according to your system. This configuration is useful on Windows.
 
 ### Set timeout for `dot` command
 
-If you are editing a very large graph, the `dot` command may need a long time to complete and your CPU may be exhausted. For this reason, I set a timeout for `dot` command and it will be terminated if it takes too long to complete. You can change the timeout by setting `dot_timeout` as needed. Generally, you don't need to change this configuration.
+If you are editing a very large graph, the `dot` command may need a long time to complete and your CPU may be exhausted. For this reason, I set a timeout for `dot` command and it will be terminated if it takes too long to complete. You can change the timeout by setting `"dot_timeout"` as needed. Generally, you don't need to change this configuration.
 
 ### Show the image in a separated layout
 
 By default, the plugin will show the image in a new window. This is flexible in most cases, especially when you have two monitors.
-If you do like use a separated layout to show the image, change the value of `show_image_with` from `window` to `layout` and save it. (You may need to restart Sublime Text 3 to take effects.)
+If you do like use a separated layout to show the image, change the value of `"show_image_with"` from `"window"` to `"layout"` and save it. (You may need to restart Sublime Text 3 to take effects.)
 
 ### Set the image directory
 
