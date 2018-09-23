@@ -7,14 +7,20 @@ import threading, queue
 import subprocess
 import tempfile
 
-
+# Temporary file used to generate image
 def get_dot_file():
 	tempdir = tempfile.gettempdir()
 	return os.path.join(tempdir, "graphvizer.dot")
 
+# Generated image file
 def get_image_file():
-	tempdir = tempfile.gettempdir()
-	return os.path.join(tempdir, "graphvizer.png")
+	image_dir = None
+	settings = sublime.load_settings("Graphvizer.sublime-settings")
+	image_dir = settings.get("image_dir")
+	if (image_dir is None) or not os.path.exists(image_dir) \
+						or not os.access(image_dir, os.W_OK):
+		image_dir = tempfile.gettempdir()
+	return os.path.join(image_dir, "graphvizer.png")
 
 
 # Trigged when user input text
@@ -33,9 +39,10 @@ class UserEditListener(sublime_plugin.EventListener):
 		# These variables will be initialized in on_modified
 		self.dot_cmd_path = None
 		self.dot_timeout = None
+		self.dot_file = None
+		self.image_file = None
 
 	def dot_thread(self):
-		dot_file = get_dot_file()
 		while True:
 			contents = self.queue_rendering.get(block=True, timeout=None)
 			'''
@@ -43,10 +50,10 @@ class UserEditListener(sublime_plugin.EventListener):
 			subprocess can't read it directly on Windows. Using a regular file is a
 			good choice.
 			'''
-			with open(file=dot_file, mode="w", encoding="utf-8") as fd:
+			with open(file=self.dot_file, mode="w", encoding="utf-8") as fd:
 				fd.write(contents)
-			image_file = get_image_file()
-			cmd = [self.dot_cmd_path, dot_file, "-Tpng", "-o", image_file]
+
+			cmd = [self.dot_cmd_path, self.dot_file, "-Tpng", "-o", self.image_file]
 			# For Windows, we must use startupinfo to hide the console window.
 			startupinfo = None
 			if os.name == "nt":
@@ -97,6 +104,10 @@ class UserEditListener(sublime_plugin.EventListener):
 		if self.dot_timeout is None:
 			settings = sublime.load_settings("Graphvizer.sublime-settings")
 			self.dot_timeout = settings.get("dot_timeout")
+		if self.image_file is None:
+			self.image_file = get_image_file()
+		if self.dot_file is None:
+			self.dot_file = get_dot_file()
 
 		# Get the contents of the whole file
 		region = sublime.Region(0, view.size())
