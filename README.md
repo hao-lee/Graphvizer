@@ -108,10 +108,10 @@ If you want to specify the path of you `dot` command, please set `"dot_cmd_path"
 
 If you are editing a very large graph, the `dot` command may need a long time to complete and your CPU may be exhausted. For this reason, I set a timeout for `dot` command and it will be terminated if it takes too long to complete. You can change the timeout by setting `"dot_timeout"` as needed. Generally, you don't need to change this configuration.
 
-### Show the image in a separated layout
+### Show the image in a new window
 
-By default, the plugin will show the image in a new window. This is flexible in most cases, especially when you have two monitors.
-If you do like use a separated layout to show the image, change the value of `"show_image_with"` from `"window"` to `"layout"` and save it. (You may need to restart Sublime Text 3 to take effects.)
+By default, the plugin will show the image in a separated layout.
+You can also use a new window to show the image. This is flexible in some cases, especially when you have two monitors. Just change the value of `"show_image_with"` from `"layout"` to `"window"` and save it. (You may need to restart Sublime Text 3 to take effects.)
 
 ### Set the image directory
 

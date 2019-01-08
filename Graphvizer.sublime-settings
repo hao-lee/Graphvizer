@@ -10,10 +10,10 @@
 	// terminated. The default value is 6 seconds.
 	"dot_timeout": 6,
 	// "show_image_with" controls how to show the image.
-	// The default value is "window", so the image will be shown in a new
-	// window by default. If you want to show it in a new layout instead,
-	// change the following value to "layout".
-	"show_image_with": "window",
+	// The default value is "layout", so the image will be shown in a separated
+	// layout by default. If you want to show it in a new window instead,
+	// change the following value to "window".
+	"show_image_with": "layout",
 	// "image_dir" controls where the image is saved. If the value is "",
 	// system temporary directory is used. You can set it to other directory.
 	// Example for Windows: "E:\\homework\\image\\"
