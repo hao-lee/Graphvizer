@@ -1,0 +1,2 @@
+[Changed] Use "layout" as the default way to show the image
+[Fixed] Queue being overflowed on frequent changes in source
