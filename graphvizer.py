@@ -28,8 +28,8 @@ class UserEditListener(sublime_plugin.EventListener):
 
 	def __init__(self):
 		super(UserEditListener, self).__init__()
-		self.queue_syntaxchecking = queue.Queue(maxsize=9) # For syntax checking
-		self.queue_rendering = queue.Queue(maxsize=9) # For graph rendering
+		self.queue_syntaxchecking = queue.Queue(maxsize=100) # For syntax checking
+		self.queue_rendering = queue.Queue(maxsize=100) # For graph rendering
 		# Start worker thread for syntax checking
 		syntax_thread = threading.Thread(target=self.syntax_thread, daemon=True)
 		syntax_thread.start()
@@ -44,6 +44,9 @@ class UserEditListener(sublime_plugin.EventListener):
 
 	def dot_thread(self):
 		while True:
+			# Clear items before the last item
+			while self.queue_rendering.qsize() > 1:
+				self.queue_rendering.get()
 			contents = self.queue_rendering.get(block=True, timeout=None)
 			'''
 			For purpose of cross-platform, we can't use TemporaryFile class because
@@ -75,6 +78,9 @@ class UserEditListener(sublime_plugin.EventListener):
 
 	def syntax_thread(self):
 		while True:
+			# Clear items before the last item
+			while self.queue_syntaxchecking.qsize() > 1:
+				self.queue_syntaxchecking.get()
 			contents = self.queue_syntaxchecking.get(block=True, timeout=None)
 			# Check if the syntax is valid
 			syntax_is_valid, log = syntaxchecker.check(contents)
