@@ -90,7 +90,8 @@ The default configurations are as follows. If you want to change some configurat
 	// "show_image_with" controls how to show the image.
 	// The default value is "layout", so the image will be shown in a separated
 	// layout by default. If you want to show it in a new window instead,
-	// change the following value to "window".
+	// change the following value to "window". If you just want to show the image
+	// in a new tab, change the value to "tab".
 	"show_image_with": "layout",
 	// "image_dir" controls where the image is saved. If the value is "",
 	// system temporary directory is used. You can set it to other directory.
@@ -111,7 +112,12 @@ If you are editing a very large graph, the `dot` command may need a long time to
 ### Show the image in a new window
 
 By default, the plugin will show the image in a separated layout.
-You can also use a new window to show the image. This is flexible in some cases, especially when you have two monitors. Just change the value of `"show_image_with"` from `"layout"` to `"window"` and save it. (You may need to restart Sublime Text 3 to take effects.)
+
+You can also use a new window to show the image. This is flexible in some cases, especially when you have two monitors. Just change the value of `"show_image_with"` from `"layout"` to `"window"` and save it.
+
+If your monitor is small, you may want to show the image in a new tab to save space. To do this, change the value to `"tab"`.
+
+(You may need to restart Sublime Text 3 to take effects.)
 
 ### Set the image directory
 

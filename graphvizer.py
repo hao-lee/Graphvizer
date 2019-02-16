@@ -141,8 +141,10 @@ class GraphvizerOpenImageCommand(sublime_plugin.WindowCommand):
 
 		if self.show_image_with == "window":
 			self.open_image_window()
-		else:
+		elif self.show_image_with == "layout":
 			self.open_image_layout()
+		else:
+			self.open_image_tab()
 
 	def open_image_window(self):
 		image_file = get_image_file()
@@ -164,3 +166,7 @@ class GraphvizerOpenImageCommand(sublime_plugin.WindowCommand):
 		self.window.focus_group(1)
 		self.window.open_file(image_file)
 		self.window.focus_group(0)
+
+	def open_image_tab(self):
+		image_file = get_image_file()
+		self.window.open_file(image_file)
