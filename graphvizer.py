@@ -44,11 +44,13 @@ class UserEditListener(sublime_plugin.EventListener):
 		# Start worker thread for graph rendering
 		dot_thread = threading.Thread(target=self.dot_thread, daemon=True)
 		dot_thread.start()
-		# These variables will be initialized in on_modified
+		# These variables will be initialized in rendering()
 		self.dot_cmd_path = None
 		self.dot_timeout = None
 		self.dot_file = None
 		self.image_file = None
+
+		self.setting_loaded = False
 
 	def dot_thread(self):
 		while True:
@@ -99,6 +101,22 @@ class UserEditListener(sublime_plugin.EventListener):
 			else:
 				self.print(log)
 
+	def rendering(self, view):
+		# Load settings
+		if not self.setting_loaded:
+			settings = sublime.load_settings("Graphvizer.sublime-settings")
+			self.dot_cmd_path = settings.get("dot_cmd_path")
+			self.dot_timeout = settings.get("dot_timeout")
+			self.image_file = get_image_file()
+			self.dot_file = get_dot_file()
+			self.setting_loaded = True
+
+		# Get the contents of the whole file
+		region = sublime.Region(0, view.size())
+		contents = view.substr(region)
+		# Put the contents into the queue for syntax checking
+		self.queue_syntaxchecking.put(contents, block=True, timeout=None)
+
 	def on_modified(self, view):
 		'''
 		Detect language. Only process DOT file.
@@ -110,36 +128,19 @@ class UserEditListener(sublime_plugin.EventListener):
 		file_syntax = view.settings().get('syntax')
 		if file_syntax != "Packages/Graphviz/DOT.sublime-syntax":
 			return
-
-		# Load settings
-		if self.dot_cmd_path is None:
-			settings = sublime.load_settings("Graphvizer.sublime-settings")
-			self.dot_cmd_path = settings.get("dot_cmd_path")
-		if self.dot_timeout is None:
-			settings = sublime.load_settings("Graphvizer.sublime-settings")
-			self.dot_timeout = settings.get("dot_timeout")
-		if self.image_file is None:
-			self.image_file = get_image_file()
-		if self.dot_file is None:
-			self.dot_file = get_dot_file()
-
-		# Get the contents of the whole file
-		region = sublime.Region(0, view.size())
-		contents = view.substr(region)
-		# Put the contents into the queue for syntax checking
-		self.queue_syntaxchecking.put(contents, block=True, timeout=None)
+		self.rendering(view)
 
 	# Trigger rendering if setting the file syntax to DOT
 	def on_post_text_command(self, view, command_name, args):
 		if command_name == "set_file_type" \
 				and args["syntax"] == "Packages/Graphviz/DOT.sublime-syntax":
-			self.on_modified(view)
+			self.rendering(view)
 
 	# Trigger rendering if opening a DOT file
 	def on_load(self, view):
 		file_syntax = view.settings().get('syntax')
 		if file_syntax == "Packages/Graphviz/DOT.sublime-syntax":
-			self.on_modified(view)
+			self.rendering(view)
 
 	def print(self, text):
 		# Get the active window as current main window
