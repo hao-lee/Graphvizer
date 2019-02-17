@@ -17,11 +17,19 @@ def get_image_file():
 	image_dir = None
 	settings = sublime.load_settings("Graphvizer.sublime-settings")
 	image_dir = settings.get("image_dir")
-	if (image_dir is None) or not os.path.exists(image_dir) \
-						or not os.access(image_dir, os.W_OK):
+	# Use the default path
+	if image_dir is None:
 		image_dir = tempfile.gettempdir()
-	return os.path.join(image_dir, "graphvizer.png")
+	# Check path existence
+	if not os.path.exists(image_dir):
+		print("%s doesn't exist. Use the default path instead." %image_dir)
+		image_dir = tempfile.gettempdir()
+	# Check path permission
+	if not os.access(image_dir, os.W_OK):
+		print("%s doesn't have permission to write. Use the default path instead." %image_dir)
+		image_dir = tempfile.gettempdir()
 
+	return os.path.join(image_dir, "graphvizer.png")
 
 # Trigged when user input text
 class UserEditListener(sublime_plugin.EventListener):
