@@ -18,7 +18,7 @@ def get_image_file():
 	settings = sublime.load_settings("Graphvizer.sublime-settings")
 	image_dir = settings.get("image_dir")
 	# Use the default path
-	if image_dir is None:
+	if image_dir == "":
 		image_dir = tempfile.gettempdir()
 	# Check path existence
 	if not os.path.exists(image_dir):
