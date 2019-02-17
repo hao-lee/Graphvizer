@@ -100,7 +100,7 @@ class UserEditListener(sublime_plugin.EventListener):
 		plugin_host will crash.
 		'''
 		file_syntax = view.settings().get('syntax')
-		if "DOT.sublime-syntax" not in file_syntax:
+		if file_syntax != "Packages/Graphviz/DOT.sublime-syntax":
 			return
 
 		# Load settings
@@ -120,6 +120,18 @@ class UserEditListener(sublime_plugin.EventListener):
 		contents = view.substr(region)
 		# Put the contents into the queue for syntax checking
 		self.queue_syntaxchecking.put(contents, block=True, timeout=None)
+
+	# Trigger rendering if setting the file syntax to DOT
+	def on_post_text_command(self, view, command_name, args):
+		if command_name == "set_file_type" \
+				and args["syntax"] == "Packages/Graphviz/DOT.sublime-syntax":
+			self.on_modified(view)
+
+	# Trigger rendering if opening a DOT file
+	def on_load(self, view):
+		file_syntax = view.settings().get('syntax')
+		if file_syntax == "Packages/Graphviz/DOT.sublime-syntax":
+			self.on_modified(view)
 
 	def print(self, text):
 		# Get the active window as current main window
