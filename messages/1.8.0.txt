@@ -1,0 +1,5 @@
+[Fixed] settings.get() return "" if the setting value is ""
+[Improved] Refactor the rendering function
+[Improved] print log when the image path can't be accessed
+[New] Trigger rendering on setting syntax and opening file
+[Improved] Be able to use a new tab to show the image
