@@ -7,8 +7,8 @@
 	// use "dot" instead of the full absolute path.
 	"dot_cmd_path": "dot",
 	// If the dot command takes more than `dot_timeout` seconds, it will be
-	// terminated. The default value is 6 seconds.
-	"dot_timeout": 6,
+	// terminated. The default value is 3 seconds.
+	"dot_timeout": 3,
 	// "show_image_with" controls how to show the image.
 	// The default value is "layout", so the image will be shown in a separated
 	// layout by default. If you want to show it in a new window instead,
