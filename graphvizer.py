@@ -78,7 +78,7 @@ class UserEditListener(sublime_plugin.EventListener):
 			# Terminate the dot process if it takes too long to complete.
 			try:
 				stdout, stderr = process.communicate(timeout=self.dot_timeout)
-			except TimeoutExpired:
+			except subprocess.TimeoutExpired:
 				process.kill()
 				stdout, stderr = process.communicate()
 			if len(stdout) != 0:
