@@ -1,0 +1,3 @@
+[Improved] Change dot_timeout to 3
+[Fixed] NameError: global name 'TimeoutExpired' is not defined
+[New] Ability to generate on save
