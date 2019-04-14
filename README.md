@@ -97,7 +97,10 @@ The default configurations are as follows. If you want to change some configurat
 	// system temporary directory is used. You can set it to other directory.
 	// Example for Windows: "E:\\homework\\image\\"
 	// Example for Linux/OSX: "/home/haolee/image/"
-	"image_dir": ""
+	"image_dir": "",
+	// The default behavior is rendering the image in real time.
+	// If set to false, the image will only be rendered when the file is saved.
+	"render_in_realtime": true
 }
 ```
 
@@ -125,6 +128,10 @@ By default, the generated image will be saved in system temporary directory. If 
 
 Example for Windows: `"E:\\homework\\image\\"`
 Example for Linux/OSX: `"/home/haolee/image/"`
+
+## Render the image when the file is saved
+
+By default, the image is rendered in real time. If you only want the image to be rendered when the file is saved, you can set `"render_in_realtime"` to `false`.
 
 # Key Bindings
 
@@ -162,6 +169,7 @@ The default key bindings are as follows. If you want to change the default key b
 - [x] Being able to show the image in a separated layout.
 - [x] Set timeout for `dot` command.
 - [x] Being able to set the image directory.
+- [x] Render the image when the file is saved.
 * For other features, please open an issue.
 
 # LICENSE
