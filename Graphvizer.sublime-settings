@@ -19,5 +19,8 @@
 	// system temporary directory is used. You can set it to other directory.
 	// Example for Windows: "E:\\homework\\image\\"
 	// Example for Linux/OSX: "/home/haolee/image/"
-	"image_dir": ""
+	"image_dir": "",
+	// The default behavior is rendering the image in real time.
+	// If set to false, the image will only be rendered when the file is saved.
+	"render_in_realtime": true
 }

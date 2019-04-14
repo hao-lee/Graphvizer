@@ -49,6 +49,7 @@ class UserEditListener(sublime_plugin.EventListener):
 		self.dot_timeout = None
 		self.dot_file = None
 		self.image_file = None
+		self.render_in_realtime = None
 
 		self.setting_loaded = False
 
@@ -94,12 +95,10 @@ class UserEditListener(sublime_plugin.EventListener):
 			contents = self.queue_syntaxchecking.get(block=True, timeout=None)
 			# Check if the syntax is valid
 			syntax_is_valid, log = syntaxchecker.check(contents)
-			if syntax_is_valid:
-				self.print(log)
+			self.print(log)
+			if syntax_is_valid and self.render_in_realtime:
 				# Put the valid contents into the queue for graph rendering
 				self.queue_rendering.put(contents, block=True, timeout=None)
-			else:
-				self.print(log)
 
 	def rendering(self, view):
 		# Load settings
@@ -109,6 +108,7 @@ class UserEditListener(sublime_plugin.EventListener):
 			self.dot_timeout = settings.get("dot_timeout")
 			self.image_file = get_image_file()
 			self.dot_file = get_dot_file()
+			self.render_in_realtime = settings.get("render_in_realtime")
 			self.setting_loaded = True
 
 		# Get the contents of the whole file
@@ -129,6 +129,17 @@ class UserEditListener(sublime_plugin.EventListener):
 		if file_syntax != "Packages/Graphviz/DOT.sublime-syntax":
 			return
 		self.rendering(view)
+
+	def on_post_save(self, view):
+		# This function is only be used when the realtime rendering is disabled
+		if self.render_in_realtime:
+			return
+		region = sublime.Region(0, view.size())
+		contents = view.substr(region)
+		syntax_is_valid, log = syntaxchecker.check(contents)
+		self.print(log)
+		if syntax_is_valid:
+			self.queue_rendering.put(contents, block=True, timeout=None)
 
 	# Trigger rendering if setting the file syntax to DOT
 	def on_post_text_command(self, view, command_name, args):
