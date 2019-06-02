@@ -7,29 +7,8 @@ import threading, queue
 import subprocess
 import tempfile
 
-# Temporary file used to generate image
-def get_dot_file():
-	tempdir = tempfile.gettempdir()
-	return os.path.join(tempdir, "graphvizer.dot")
-
-# Generated image file
-def get_image_file():
-	image_dir = None
-	settings = sublime.load_settings("Graphvizer.sublime-settings")
-	image_dir = settings.get("image_dir")
-	# Use the default path
-	if image_dir == "":
-		image_dir = tempfile.gettempdir()
-	# Check path existence
-	if not os.path.exists(image_dir):
-		print("%s doesn't exist. Use the default path instead." %image_dir)
-		image_dir = tempfile.gettempdir()
-	# Check path permission
-	if not os.access(image_dir, os.W_OK):
-		print("%s doesn't have permission to write. Use the default path instead." %image_dir)
-		image_dir = tempfile.gettempdir()
-
-	return os.path.join(image_dir, "graphvizer.png")
+# Image file path
+image_filepath = None
 
 # Trigged when user input text
 class UserEditListener(sublime_plugin.EventListener):
@@ -47,11 +26,31 @@ class UserEditListener(sublime_plugin.EventListener):
 		# These variables will be initialized in rendering()
 		self.dot_cmd_path = None
 		self.dot_timeout = None
-		self.dot_file = None
-		self.image_file = None
+		self.image_dir = None
 		self.render_in_realtime = None
-
 		self.setting_loaded = False
+		self.intermediate_file = self.get_intermediate_dot_filepath()
+
+	# Temporary file used to generate image
+	def get_intermediate_dot_filepath(self):
+		tempdir = tempfile.gettempdir()
+		return os.path.join(tempdir, "intermediate.dot")
+
+	# Generated image file
+	def get_image_filepath(self, image_filename):
+		# Use the default path
+		if self.image_dir == "":
+			return os.path.join(tempfile.gettempdir(), image_filename)
+		# Check path existence
+		if not os.path.exists(self.image_dir):
+			print("%s doesn't exist. Use the default path instead." %self.image_dir)
+			return os.path.join(tempfile.gettempdir(), image_filename)
+		# Check path permission
+		if not os.access(self.image_dir, os.W_OK):
+			print("%s doesn't have permission to write. Use the default path instead." %self.image_dir)
+			return os.path.join(tempfile.gettempdir(), image_filename)
+
+		return os.path.join(self.image_dir, image_filename)
 
 	def dot_thread(self):
 		while True:
@@ -59,15 +58,16 @@ class UserEditListener(sublime_plugin.EventListener):
 			while self.queue_rendering.qsize() > 1:
 				self.queue_rendering.get()
 			contents = self.queue_rendering.get(block=True, timeout=None)
+
 			'''
 			For purpose of cross-platform, we can't use TemporaryFile class because
 			subprocess can't read it directly on Windows. Using a regular file is a
 			good choice.
 			'''
-			with open(file=self.dot_file, mode="w", encoding="utf-8") as fd:
+			with open(file=self.intermediate_file, mode="w", encoding="utf-8") as fd:
 				fd.write(contents)
-
-			cmd = [self.dot_cmd_path, self.dot_file, "-Tpng", "-o", self.image_file]
+			global image_filepath
+			cmd = [self.dot_cmd_path, self.intermediate_file, "-Tpng", "-o", image_filepath]
 			# For Windows, we must use startupinfo to hide the console window.
 			startupinfo = None
 			if os.name == "nt":
@@ -100,17 +100,27 @@ class UserEditListener(sublime_plugin.EventListener):
 				# Put the valid contents into the queue for graph rendering
 				self.queue_rendering.put(contents, block=True, timeout=None)
 
-	def rendering(self, view):
-		# Load settings
-		if not self.setting_loaded:
-			settings = sublime.load_settings("Graphvizer.sublime-settings")
-			self.dot_cmd_path = settings.get("dot_cmd_path")
-			self.dot_timeout = settings.get("dot_timeout")
-			self.image_file = get_image_file()
-			self.dot_file = get_dot_file()
-			self.render_in_realtime = settings.get("render_in_realtime")
-			self.setting_loaded = True
+	def load_settings(self):
+		settings = sublime.load_settings("Graphvizer.sublime-settings")
+		self.dot_cmd_path = settings.get("dot_cmd_path")
+		self.dot_timeout = settings.get("dot_timeout")
+		self.image_dir = settings.get("image_dir")
+		self.render_in_realtime = settings.get("render_in_realtime")
+		self.setting_loaded = True
 
+	def set_image_filepath(self, view):
+		global image_filepath
+		filepath = view.file_name()
+		if filepath is None: # Current file is not saved, use temp image file
+			image_filepath = self.get_image_filepath("temp~.png")
+		else:
+			filebasename = os.path.splitext(os.path.basename(filepath))[0] + ".png"
+			image_filepath = self.get_image_filepath(filebasename)
+
+	def rendering(self, view):
+		if not self.setting_loaded:
+			self.load_settings()
+		self.set_image_filepath(view)
 		# Get the contents of the whole file
 		region = sublime.Region(0, view.size())
 		contents = view.substr(region)
@@ -130,7 +140,20 @@ class UserEditListener(sublime_plugin.EventListener):
 			return
 		self.rendering(view)
 
+	# When the file is saved, update the image_filepath using dot filename
+	def on_pre_save(self, view):
+		file_syntax = view.settings().get('syntax')
+		if file_syntax != "Packages/Graphviz/DOT.sublime-syntax":
+			return
+		filepath = view.file_name()
+		filebasename = os.path.splitext(os.path.basename(filepath))[0] + ".png"
+		global image_filepath
+		image_filepath = self.get_image_filepath(filebasename)
+
 	def on_post_save(self, view):
+		file_syntax = view.settings().get('syntax')
+		if file_syntax != "Packages/Graphviz/DOT.sublime-syntax":
+			return
 		# This function is only be used when the realtime rendering is disabled
 		if self.render_in_realtime:
 			return
@@ -178,27 +201,43 @@ class GraphvizerOpenImageCommand(sublime_plugin.WindowCommand):
 		else:
 			self.open_image_tab()
 
+	def check_image_filepath(self):
+		global image_filepath
+		if image_filepath is None:
+			sublime.message_dialog("Image has not been rendered!")
+			return False
+		if os.path.basename(image_filepath) == "temp~.png":
+			sublime.message_dialog("You haven't saved your dot file, " \
+				"so the image file is temporarily named temp~.png. " \
+				"After your save you dot file later, please close temp~.png "\
+				"and reopen image again using keyboard shortcuts or menus. " \
+				"Otherwise, you won't see the correct image.")
+		return True
+
 	def open_image_window(self):
-		image_file = get_image_file()
+		if not self.check_image_filepath():
+			return
 		sublime.run_command("new_window")
 		image_window = sublime.active_window()
-		image_window.open_file(image_file)
+		image_window.open_file(image_filepath)
 		image_window.set_menu_visible(False)
 		image_window.set_tabs_visible(False)
 		image_window.set_minimap_visible(False)
 		image_window.set_status_bar_visible(False)
 
 	def open_image_layout(self):
-		image_file = get_image_file()
+		if not self.check_image_filepath():
+			return
 		self.window.set_layout({
 			"cols": [0.0, 0.5, 1.0],
 			"rows": [0.0, 1.0],
 			"cells": [[0, 0, 1, 1], [1, 0, 2, 1]]
 		})
 		self.window.focus_group(1)
-		self.window.open_file(image_file)
+		self.window.open_file(image_filepath)
 		self.window.focus_group(0)
 
 	def open_image_tab(self):
-		image_file = get_image_file()
-		self.window.open_file(image_file)
+		if not self.check_image_filepath():
+			return
+		self.window.open_file(image_filepath)
