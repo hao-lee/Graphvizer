@@ -10,6 +10,28 @@ import tempfile
 # Image file path
 image_filepath = None
 
+class GvzSettings():
+	def __init__(self):
+		self.st_settings = sublime.load_settings("Graphvizer.sublime-settings")
+		self.load()
+		self.add_callback()
+
+	def add_callback(self):
+		self.st_settings.add_on_change("dot_cmd_path", self.load)
+		self.st_settings.add_on_change("dot_timeout", self.load)
+		self.st_settings.add_on_change("show_image_with", self.load)
+		self.st_settings.add_on_change("image_dir", self.load)
+		self.st_settings.add_on_change("render_in_realtime", self.load)
+
+	def load(self):
+		self.dot_cmd_path = self.st_settings.get("dot_cmd_path")
+		self.dot_timeout = self.st_settings.get("dot_timeout")
+		self.show_image_with = self.st_settings.get("show_image_with")
+		self.image_dir = self.st_settings.get("image_dir")
+		self.render_in_realtime = self.st_settings.get("render_in_realtime")
+
+gvzsettings = GvzSettings()
+
 # Trigged when user input text
 class UserEditListener(sublime_plugin.EventListener):
 
@@ -23,12 +45,6 @@ class UserEditListener(sublime_plugin.EventListener):
 		# Start worker thread for graph rendering
 		dot_thread = threading.Thread(target=self.dot_thread, daemon=True)
 		dot_thread.start()
-		# These variables will be initialized in rendering()
-		self.dot_cmd_path = None
-		self.dot_timeout = None
-		self.image_dir = None
-		self.render_in_realtime = None
-		self.setting_loaded = False
 		self.intermediate_file = self.get_intermediate_dot_filepath()
 
 	# Temporary file used to generate image
@@ -39,18 +55,18 @@ class UserEditListener(sublime_plugin.EventListener):
 	# Generated image file
 	def get_image_filepath(self, image_filename):
 		# Use the default path
-		if self.image_dir == "":
+		if gvzsettings.image_dir == "":
 			return os.path.join(tempfile.gettempdir(), image_filename)
 		# Check path existence
-		if not os.path.exists(self.image_dir):
-			print("%s doesn't exist. Use the default path instead." %self.image_dir)
+		if not os.path.exists(gvzsettings.image_dir):
+			print("%s doesn't exist. Use the default path instead." %gvzsettings.image_dir)
 			return os.path.join(tempfile.gettempdir(), image_filename)
 		# Check path permission
-		if not os.access(self.image_dir, os.W_OK):
-			print("%s doesn't have permission to write. Use the default path instead." %self.image_dir)
+		if not os.access(gvzsettings.image_dir, os.W_OK):
+			print("%s doesn't have permission to write. Use the default path instead." %gvzsettings.image_dir)
 			return os.path.join(tempfile.gettempdir(), image_filename)
 
-		return os.path.join(self.image_dir, image_filename)
+		return os.path.join(gvzsettings.image_dir, image_filename)
 
 	def dot_thread(self):
 		while True:
@@ -67,7 +83,7 @@ class UserEditListener(sublime_plugin.EventListener):
 			with open(file=self.intermediate_file, mode="w", encoding="utf-8") as fd:
 				fd.write(contents)
 			global image_filepath
-			cmd = [self.dot_cmd_path, self.intermediate_file, "-Tpng", "-o", image_filepath]
+			cmd = [gvzsettings.dot_cmd_path, self.intermediate_file, "-Tpng", "-o", image_filepath]
 			# For Windows, we must use startupinfo to hide the console window.
 			startupinfo = None
 			if os.name == "nt":
@@ -78,7 +94,7 @@ class UserEditListener(sublime_plugin.EventListener):
 											startupinfo=startupinfo)
 			# Terminate the dot process if it takes too long to complete.
 			try:
-				stdout, stderr = process.communicate(timeout=self.dot_timeout)
+				stdout, stderr = process.communicate(timeout=gvzsettings.dot_timeout)
 			except subprocess.TimeoutExpired:
 				process.kill()
 				stdout, stderr = process.communicate()
@@ -96,17 +112,9 @@ class UserEditListener(sublime_plugin.EventListener):
 			# Check if the syntax is valid
 			syntax_is_valid, log = syntaxchecker.check(contents)
 			self.print(log)
-			if syntax_is_valid and self.render_in_realtime:
+			if syntax_is_valid and gvzsettings.render_in_realtime:
 				# Put the valid contents into the queue for graph rendering
 				self.queue_rendering.put(contents, block=True, timeout=None)
-
-	def load_settings(self):
-		settings = sublime.load_settings("Graphvizer.sublime-settings")
-		self.dot_cmd_path = settings.get("dot_cmd_path")
-		self.dot_timeout = settings.get("dot_timeout")
-		self.image_dir = settings.get("image_dir")
-		self.render_in_realtime = settings.get("render_in_realtime")
-		self.setting_loaded = True
 
 	def set_image_filepath(self, view):
 		global image_filepath
@@ -118,8 +126,6 @@ class UserEditListener(sublime_plugin.EventListener):
 			image_filepath = self.get_image_filepath(filebasename)
 
 	def rendering(self, view):
-		if not self.setting_loaded:
-			self.load_settings()
 		self.set_image_filepath(view)
 		# Get the contents of the whole file
 		region = sublime.Region(0, view.size())
@@ -155,7 +161,7 @@ class UserEditListener(sublime_plugin.EventListener):
 		if file_syntax != "Packages/Graphviz/DOT.sublime-syntax":
 			return
 		# This function is only be used when the realtime rendering is disabled
-		if self.render_in_realtime:
+		if gvzsettings.render_in_realtime:
 			return
 		region = sublime.Region(0, view.size())
 		contents = view.substr(region)
@@ -187,16 +193,11 @@ class GraphvizerOpenImageCommand(sublime_plugin.WindowCommand):
 
 	def __init__(self, window):
 		super(GraphvizerOpenImageCommand, self).__init__(window)
-		self.show_image_with = None
 
 	def run(self):
-		if self.show_image_with is None:
-			settings = sublime.load_settings("Graphvizer.sublime-settings")
-			self.show_image_with = settings.get("show_image_with")
-
-		if self.show_image_with == "window":
+		if gvzsettings.show_image_with == "window":
 			self.open_image_window()
-		elif self.show_image_with == "layout":
+		elif gvzsettings.show_image_with == "layout":
 			self.open_image_layout()
 		else:
 			self.open_image_tab()
