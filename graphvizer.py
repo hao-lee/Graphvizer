@@ -191,12 +191,12 @@ class UserEditListener(sublime_plugin.EventListener):
 		file_syntax = view.settings().get('syntax')
 		if file_syntax != "Packages/Graphviz/DOT.sublime-syntax":
 			return
-		gvzsettings.set_image_filepath(view.file_name())
 		# The file is saved for the first time
 		if view_saving_status.not_saved_before(view):
 			sublime.message_dialog("You save your dot file, so the image filename " \
 				"has been changed according to your filename. Please close temp~.png " \
 				"and reopen image again using keyboard shortcuts or menus.")
+			gvzsettings.set_image_filepath(view.file_name())
 			view_saving_status.set_saved(view)
 
 	def on_post_save(self, view):
