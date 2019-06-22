@@ -175,13 +175,21 @@ class UserEditListener(sublime_plugin.EventListener):
 	def on_post_text_command(self, view, command_name, args):
 		if command_name == "set_file_type" \
 				and args["syntax"] == "Packages/Graphviz/DOT.sublime-syntax":
+			gvzsettings.set_image_filepath(view.file_name())
 			self.rendering(view)
 
 	# Trigger rendering if opening a DOT file
 	def on_load(self, view):
 		file_syntax = view.settings().get('syntax')
 		if file_syntax == "Packages/Graphviz/DOT.sublime-syntax":
+			# Tip: No need to update image_filepath, on_activated() will do this.
 			self.rendering(view)
+
+	# Update the image_filepath when switching between tabs
+	def on_activated(self, view):
+		file_syntax = view.settings().get('syntax')
+		if file_syntax == "Packages/Graphviz/DOT.sublime-syntax":
+			gvzsettings.set_image_filepath(view.file_name())
 
 	def print(self, text):
 		# Get the active window as current main window
