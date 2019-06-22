@@ -9,6 +9,8 @@ import tempfile
 
 # Settings
 gvzsettings = None
+# view saving status
+view_saving_status = ViewSavingStatus()
 
 # load settings when the plugin host is ready
 # https://forum.sublimetext.com/t/settings-not-loading-fast-enough/40634
@@ -59,6 +61,40 @@ class GvzSettings():
 			return
 		# OK, use configured image_dir
 		self.image_filepath = os.path.join(self.image_dir, image_filename)
+
+
+class ViewSavingStatus():
+	def __init__(self):
+		self.saving_status = dict()
+		for window in sublime.windows():
+			for view in window.views():
+				file_syntax = view.settings().get('syntax')
+				if file_syntax != "Packages/Graphviz/DOT.sublime-syntax":
+					continue
+				if view.file_name() is None:
+					self.saving_status[view.id()] = False
+				else:
+					self.saving_status[view.id()] = True
+
+	def append(self, view):
+		if view.file_name() is None:
+			self.saving_status[view.id()] = False
+		else:
+			self.saving_status[view.id()] = True
+
+	# delete() is not necessary
+	def delete(self, view):
+		pass
+
+	def not_saved_before(self, view):
+		if self.saving_status[view.id()] == False:
+			return True
+		else:
+			return False
+
+	def set_saved(self, view):
+		self.saving_status[view.id()] = True
+
 
 # Trigged when user input text
 class UserEditListener(sublime_plugin.EventListener):
@@ -156,6 +192,12 @@ class UserEditListener(sublime_plugin.EventListener):
 		if file_syntax != "Packages/Graphviz/DOT.sublime-syntax":
 			return
 		gvzsettings.set_image_filepath(view.file_name())
+		# The file is saved for the first time
+		if view_saving_status.not_saved_before(view):
+			sublime.message_dialog("You save your dot file, so the image filename " \
+				"has been changed according to your filename. Please close temp~.png " \
+				"and reopen image again using keyboard shortcuts or menus.")
+			view_saving_status.set_saved(view)
 
 	def on_post_save(self, view):
 		file_syntax = view.settings().get('syntax')
@@ -177,6 +219,7 @@ class UserEditListener(sublime_plugin.EventListener):
 				and args["syntax"] == "Packages/Graphviz/DOT.sublime-syntax":
 			gvzsettings.set_image_filepath(view.file_name())
 			self.rendering(view)
+			view_saving_status.append(view)
 
 	# Trigger rendering if opening a DOT file
 	def on_load(self, view):
@@ -184,6 +227,13 @@ class UserEditListener(sublime_plugin.EventListener):
 		if file_syntax == "Packages/Graphviz/DOT.sublime-syntax":
 			# Tip: No need to update image_filepath, on_activated() will do this.
 			self.rendering(view)
+			view_saving_status.append(view)
+
+	# New an empty view
+	def on_new(self, view):
+		file_syntax = view.settings().get('syntax')
+		if file_syntax == "Packages/Graphviz/DOT.sublime-syntax":
+			view_saving_status.append(view)
 
 	# Update the image_filepath when switching between tabs
 	def on_activated(self, view):
@@ -215,12 +265,6 @@ class GraphvizerOpenImageCommand(sublime_plugin.WindowCommand):
 		if gvzsettings.image_filepath is None:
 			sublime.message_dialog("Image has not been rendered!")
 			return False
-		if os.path.basename(gvzsettings.image_filepath) == "temp~.png":
-			sublime.message_dialog("You haven't saved your dot file, " \
-				"so the image file is temporarily named temp~.png. " \
-				"After your save you dot file later, please close temp~.png "\
-				"and reopen image again using keyboard shortcuts or menus. " \
-				"Otherwise, you won't see the correct image.")
 		return True
 
 	def open_image_window(self):
