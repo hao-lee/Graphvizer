@@ -9,12 +9,20 @@ import tempfile
 
 # Image file path
 image_filepath = None
+# Settings
+gvzsettings = None
+
+# load settings when the plugin host is ready
+# https://forum.sublimetext.com/t/settings-not-loading-fast-enough/40634
+def plugin_loaded():
+	global gvzsettings
+	gvzsettings = GvzSettings()
+	gvzsettings.load()
+	gvzsettings.add_callback()
 
 class GvzSettings():
 	def __init__(self):
 		self.st_settings = sublime.load_settings("Graphvizer.sublime-settings")
-		self.load()
-		self.add_callback()
 
 	def add_callback(self):
 		self.st_settings.add_on_change("dot_cmd_path", self.load)
@@ -29,8 +37,6 @@ class GvzSettings():
 		self.show_image_with = self.st_settings.get("show_image_with")
 		self.image_dir = self.st_settings.get("image_dir")
 		self.render_in_realtime = self.st_settings.get("render_in_realtime")
-
-gvzsettings = GvzSettings()
 
 # Trigged when user input text
 class UserEditListener(sublime_plugin.EventListener):
