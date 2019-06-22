@@ -7,8 +7,6 @@ import threading, queue
 import subprocess
 import tempfile
 
-# Image file path
-image_filepath = None
 # Settings
 gvzsettings = None
 
@@ -23,6 +21,8 @@ def plugin_loaded():
 class GvzSettings():
 	def __init__(self):
 		self.st_settings = sublime.load_settings("Graphvizer.sublime-settings")
+		# Image file path
+		self.image_filepath = None
 
 	def add_callback(self):
 		self.st_settings.add_on_change("dot_cmd_path", self.load)
@@ -37,6 +37,28 @@ class GvzSettings():
 		self.show_image_with = self.st_settings.get("show_image_with")
 		self.image_dir = self.st_settings.get("image_dir")
 		self.render_in_realtime = self.st_settings.get("render_in_realtime")
+
+	def set_image_filepath(self, dot_filepath):
+		if dot_filepath is None: # Current file is not saved, use temp image file
+			image_filename = "temp~.png"
+		else:
+			image_filename = os.path.splitext(os.path.basename(dot_filepath))[0] + ".png"
+		# Use the default path
+		if self.image_dir == "":
+			self.image_filepath = os.path.join(tempfile.gettempdir(), image_filename)
+			return
+		# Check path existence
+		if not os.path.exists(self.image_dir):
+			print("%s doesn't exist. Use the default path instead." %self.image_dir)
+			self.image_filepath = os.path.join(tempfile.gettempdir(), image_filename)
+			return
+		# Check path permission
+		if not os.access(self.image_dir, os.W_OK):
+			print("%s doesn't have permission to write. Use the default path instead." %self.image_dir)
+			self.image_filepath = os.path.join(tempfile.gettempdir(), image_filename)
+			return
+		# OK, use configured image_dir
+		self.image_filepath = os.path.join(self.image_dir, image_filename)
 
 # Trigged when user input text
 class UserEditListener(sublime_plugin.EventListener):
@@ -58,22 +80,6 @@ class UserEditListener(sublime_plugin.EventListener):
 		tempdir = tempfile.gettempdir()
 		return os.path.join(tempdir, "intermediate.dot")
 
-	# Generated image file
-	def get_image_filepath(self, image_filename):
-		# Use the default path
-		if gvzsettings.image_dir == "":
-			return os.path.join(tempfile.gettempdir(), image_filename)
-		# Check path existence
-		if not os.path.exists(gvzsettings.image_dir):
-			print("%s doesn't exist. Use the default path instead." %gvzsettings.image_dir)
-			return os.path.join(tempfile.gettempdir(), image_filename)
-		# Check path permission
-		if not os.access(gvzsettings.image_dir, os.W_OK):
-			print("%s doesn't have permission to write. Use the default path instead." %gvzsettings.image_dir)
-			return os.path.join(tempfile.gettempdir(), image_filename)
-
-		return os.path.join(gvzsettings.image_dir, image_filename)
-
 	def dot_thread(self):
 		while True:
 			# Clear items before the last item
@@ -88,8 +94,8 @@ class UserEditListener(sublime_plugin.EventListener):
 			'''
 			with open(file=self.intermediate_file, mode="w", encoding="utf-8") as fd:
 				fd.write(contents)
-			global image_filepath
-			cmd = [gvzsettings.dot_cmd_path, self.intermediate_file, "-Tpng", "-o", image_filepath]
+
+			cmd = [gvzsettings.dot_cmd_path, self.intermediate_file, "-Tpng", "-o", gvzsettings.image_filepath]
 			# For Windows, we must use startupinfo to hide the console window.
 			startupinfo = None
 			if os.name == "nt":
@@ -122,17 +128,9 @@ class UserEditListener(sublime_plugin.EventListener):
 				# Put the valid contents into the queue for graph rendering
 				self.queue_rendering.put(contents, block=True, timeout=None)
 
-	def set_image_filepath(self, view):
-		global image_filepath
-		filepath = view.file_name()
-		if filepath is None: # Current file is not saved, use temp image file
-			image_filepath = self.get_image_filepath("temp~.png")
-		else:
-			filebasename = os.path.splitext(os.path.basename(filepath))[0] + ".png"
-			image_filepath = self.get_image_filepath(filebasename)
-
 	def rendering(self, view):
-		self.set_image_filepath(view)
+		# Set image filepath according to current dot view
+		gvzsettings.set_image_filepath(view.file_name())
 		# Get the contents of the whole file
 		region = sublime.Region(0, view.size())
 		contents = view.substr(region)
@@ -157,10 +155,7 @@ class UserEditListener(sublime_plugin.EventListener):
 		file_syntax = view.settings().get('syntax')
 		if file_syntax != "Packages/Graphviz/DOT.sublime-syntax":
 			return
-		filepath = view.file_name()
-		filebasename = os.path.splitext(os.path.basename(filepath))[0] + ".png"
-		global image_filepath
-		image_filepath = self.get_image_filepath(filebasename)
+		gvzsettings.set_image_filepath(view.file_name())
 
 	def on_post_save(self, view):
 		file_syntax = view.settings().get('syntax')
@@ -209,11 +204,10 @@ class GraphvizerOpenImageCommand(sublime_plugin.WindowCommand):
 			self.open_image_tab()
 
 	def check_image_filepath(self):
-		global image_filepath
-		if image_filepath is None:
+		if gvzsettings.image_filepath is None:
 			sublime.message_dialog("Image has not been rendered!")
 			return False
-		if os.path.basename(image_filepath) == "temp~.png":
+		if os.path.basename(gvzsettings.image_filepath) == "temp~.png":
 			sublime.message_dialog("You haven't saved your dot file, " \
 				"so the image file is temporarily named temp~.png. " \
 				"After your save you dot file later, please close temp~.png "\
@@ -226,7 +220,7 @@ class GraphvizerOpenImageCommand(sublime_plugin.WindowCommand):
 			return
 		sublime.run_command("new_window")
 		image_window = sublime.active_window()
-		image_window.open_file(image_filepath)
+		image_window.open_file(gvzsettings.image_filepath)
 		image_window.set_menu_visible(False)
 		image_window.set_tabs_visible(False)
 		image_window.set_minimap_visible(False)
@@ -241,10 +235,10 @@ class GraphvizerOpenImageCommand(sublime_plugin.WindowCommand):
 			"cells": [[0, 0, 1, 1], [1, 0, 2, 1]]
 		})
 		self.window.focus_group(1)
-		self.window.open_file(image_filepath)
+		self.window.open_file(gvzsettings.image_filepath)
 		self.window.focus_group(0)
 
 	def open_image_tab(self):
 		if not self.check_image_filepath():
 			return
-		self.window.open_file(image_filepath)
+		self.window.open_file(gvzsettings.image_filepath)
