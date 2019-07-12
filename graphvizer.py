@@ -7,19 +7,6 @@ import threading, queue
 import subprocess
 import tempfile
 
-# Settings
-gvzsettings = None
-# view saving status
-view_saving_status = ViewSavingStatus()
-
-# load settings when the plugin host is ready
-# https://forum.sublimetext.com/t/settings-not-loading-fast-enough/40634
-def plugin_loaded():
-	global gvzsettings
-	gvzsettings = GvzSettings()
-	gvzsettings.load()
-	gvzsettings.add_callback()
-
 class GvzSettings():
 	def __init__(self):
 		self.st_settings = sublime.load_settings("Graphvizer.sublime-settings")
@@ -94,6 +81,20 @@ class ViewSavingStatus():
 
 	def set_saved(self, view):
 		self.saving_status[view.id()] = True
+
+
+# Settings
+gvzsettings = None
+# view saving status
+view_saving_status = ViewSavingStatus()
+
+# load settings when the plugin host is ready
+# https://forum.sublimetext.com/t/settings-not-loading-fast-enough/40634
+def plugin_loaded():
+	global gvzsettings
+	gvzsettings = GvzSettings()
+	gvzsettings.load()
+	gvzsettings.add_callback()
 
 
 # Trigged when user input text
