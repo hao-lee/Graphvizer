@@ -1,0 +1,8 @@
+[Fixed] object defined before class definition
+[Improved] on_pre_save: Only update image_filepath when the file is first saved
+[Improved] Notify user when saving file for the first time
+[Fixed] Update the image_filepath when switching between tabs
+[Improved] Refactor the logic when processing image_filepath
+[Fixed] Can't get setting value when startup
+[Improved] Use a dedicated class to manage user settings
+[Improved] Use dot filename as image filename
