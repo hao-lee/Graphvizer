@@ -73,11 +73,8 @@ class ViewSavingStatus():
 	def delete(self, view):
 		pass
 
-	def not_saved_before(self, view):
-		if self.saving_status[view.id()] == False:
-			return True
-		else:
-			return False
+	def is_saved(self, view):
+		return self.saving_status[view.id()]
 
 	def set_saved(self, view):
 		self.saving_status[view.id()] = True
@@ -193,7 +190,7 @@ class UserEditListener(sublime_plugin.EventListener):
 		if file_syntax != "Packages/Graphviz/DOT.sublime-syntax":
 			return
 		# The file is saved for the first time
-		if view_saving_status.not_saved_before(view):
+		if not view_saving_status.is_saved(view):
 			sublime.message_dialog("You save your dot file, so the image filename " \
 				"has been changed according to your filename. Please close temp~.png " \
 				"and reopen image again using keyboard shortcuts or menus.")
