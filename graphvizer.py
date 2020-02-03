@@ -27,7 +27,7 @@ class GvzSettings():
 		self.image_dir = self.st_settings.get("image_dir")
 		self.render_in_realtime = self.st_settings.get("render_in_realtime")
 
-	def set_image_filepath(self, dot_filepath):
+	def update_image_filepath(self, dot_filepath):
 		if dot_filepath is None: # Current file is not saved, use temp image file
 			image_filename = "temp~.png"
 		else:
@@ -74,7 +74,12 @@ class ViewSavingStatus():
 		pass
 
 	def is_saved(self, view):
-		return self.saving_status[view.id()]
+		# corner case: new a empty view and select a exist dot file to overwrite
+		# while saving it. In this case, on_post_text_command() won't be invoked
+		# to append view, but the file syntax is set to DOT. on_pre_save()->is_saved()
+		# will raise KeyError. We treat this case as "Not Saved" and set_saved()
+		# will append the view to dict.
+		return self.saving_status.get(view.id(), False)
 
 	def set_saved(self, view):
 		self.saving_status[view.id()] = True
@@ -158,13 +163,11 @@ class UserEditListener(sublime_plugin.EventListener):
 			# Check if the syntax is valid
 			syntax_is_valid, log = syntaxchecker.check(contents)
 			self.print(log)
-			if syntax_is_valid and gvzsettings.render_in_realtime:
+			if syntax_is_valid:
 				# Put the valid contents into the queue for graph rendering
 				self.queue_rendering.put(contents, block=True, timeout=None)
 
 	def rendering(self, view):
-		# Set image filepath according to current dot view
-		gvzsettings.set_image_filepath(view.file_name())
 		# Get the contents of the whole file
 		region = sublime.Region(0, view.size())
 		contents = view.substr(region)
@@ -182,9 +185,11 @@ class UserEditListener(sublime_plugin.EventListener):
 		file_syntax = view.settings().get('syntax')
 		if file_syntax != "Packages/Graphviz/DOT.sublime-syntax":
 			return
+		if not gvzsettings.render_in_realtime:
+			return
 		self.rendering(view)
 
-	# When the file is saved, update the image_filepath using dot filename
+	# Update the image_filepath and trigger rendering when the file is saved
 	def on_pre_save(self, view):
 		file_syntax = view.settings().get('syntax')
 		if file_syntax != "Packages/Graphviz/DOT.sublime-syntax":
@@ -194,50 +199,32 @@ class UserEditListener(sublime_plugin.EventListener):
 			sublime.message_dialog("You save your dot file, so the image filename " \
 				"has been changed according to your filename. Please close temp~.png " \
 				"and reopen image again using keyboard shortcuts or menus.")
-			gvzsettings.set_image_filepath(view.file_name())
 			view_saving_status.set_saved(view)
-
-	def on_post_save(self, view):
-		file_syntax = view.settings().get('syntax')
-		if file_syntax != "Packages/Graphviz/DOT.sublime-syntax":
-			return
-		# This function is only be used when the realtime rendering is disabled
-		if gvzsettings.render_in_realtime:
-			return
-		region = sublime.Region(0, view.size())
-		contents = view.substr(region)
-		syntax_is_valid, log = syntaxchecker.check(contents)
-		self.print(log)
-		if syntax_is_valid:
-			self.queue_rendering.put(contents, block=True, timeout=None)
+			gvzsettings.update_image_filepath(view.file_name())
+			self.rendering(view)
 
 	# Trigger rendering if setting the file syntax to DOT
 	def on_post_text_command(self, view, command_name, args):
 		if command_name == "set_file_type" \
 				and args["syntax"] == "Packages/Graphviz/DOT.sublime-syntax":
-			gvzsettings.set_image_filepath(view.file_name())
-			self.rendering(view)
 			view_saving_status.append(view)
+			gvzsettings.update_image_filepath(view.file_name())
+			self.rendering(view)
 
 	# Trigger rendering if opening a DOT file
 	def on_load(self, view):
 		file_syntax = view.settings().get('syntax')
 		if file_syntax == "Packages/Graphviz/DOT.sublime-syntax":
-			# Tip: No need to update image_filepath, on_activated() will do this.
+			view_saving_status.append(view)
+			gvzsettings.update_image_filepath(view.file_name())
 			self.rendering(view)
-			view_saving_status.append(view)
-
-	# New an empty view
-	def on_new(self, view):
-		file_syntax = view.settings().get('syntax')
-		if file_syntax == "Packages/Graphviz/DOT.sublime-syntax":
-			view_saving_status.append(view)
 
 	# Update the image_filepath when switching between tabs
 	def on_activated(self, view):
 		file_syntax = view.settings().get('syntax')
 		if file_syntax == "Packages/Graphviz/DOT.sublime-syntax":
-			gvzsettings.set_image_filepath(view.file_name())
+			gvzsettings.update_image_filepath(view.file_name())
+			# No need to render as the image has been rendered when loading or modifying
 
 	def print(self, text):
 		# Get the active window as current main window
