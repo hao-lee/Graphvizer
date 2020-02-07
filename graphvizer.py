@@ -12,6 +12,8 @@ class GvzSettings():
 		self.st_settings = sublime.load_settings("Graphvizer.sublime-settings")
 		# Image file path
 		self.image_filepath = None
+		# Dot file directory
+		self.dot_file_dirname = None
 
 	def add_callback(self):
 		self.st_settings.add_on_change("dot_cmd_path", self.load)
@@ -48,6 +50,12 @@ class GvzSettings():
 			return
 		# OK, use configured image_dirname
 		self.image_filepath = os.path.join(self.image_dirname, image_basename)
+
+	def update_dot_file_dirname(self, dot_filepath):
+		if dot_filepath is not None:
+			self.dot_file_dirname = os.path.dirname(dot_filepath)
+		else:
+			self.dot_file_dirname = None
 
 
 class ViewSavingStatus():
@@ -140,9 +148,12 @@ class UserEditListener(sublime_plugin.EventListener):
 			if os.name == "nt":
 				startupinfo = subprocess.STARTUPINFO()
 				startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+			# Default cwd is Sublime Text installation directory, such as `D:\Sublime Text`
+			# We change it to the directory the same as dot file. See issue #16.
 			process = subprocess.Popen(cmd, stdout=subprocess.PIPE,
 											stderr=subprocess.PIPE,
-											startupinfo=startupinfo)
+											startupinfo=startupinfo,
+											cwd=gvzsettings.dot_file_dirname)
 			# Terminate the dot process if it takes too long to complete.
 			try:
 				stdout, stderr = process.communicate(timeout=gvzsettings.dot_timeout)
@@ -201,6 +212,7 @@ class UserEditListener(sublime_plugin.EventListener):
 				"and reopen image again using keyboard shortcuts or menus.")
 			view_saving_status.set_saved(view)
 			gvzsettings.update_image_filepath(view.file_name())
+			gvzsettings.update_dot_file_dirname(view.file_name())
 			self.rendering(view)
 
 	# Trigger rendering if setting the file syntax to DOT
@@ -209,6 +221,7 @@ class UserEditListener(sublime_plugin.EventListener):
 				and args["syntax"] == "Packages/Graphviz/DOT.sublime-syntax":
 			view_saving_status.append(view)
 			gvzsettings.update_image_filepath(view.file_name())
+			gvzsettings.update_dot_file_dirname(view.file_name())
 			self.rendering(view)
 		# Corner case: Copy the content from a dot file and paste to a plain text view,
 		# the view will be set to `DOT` syntax automatically and on_modified() will be
@@ -217,6 +230,7 @@ class UserEditListener(sublime_plugin.EventListener):
 		if command_name == "paste" \
 			and view.settings().get('syntax') == "Packages/Graphviz/DOT.sublime-syntax":
 			gvzsettings.update_image_filepath(view.file_name())
+			gvzsettings.update_dot_file_dirname(view.file_name())
 
 	# Trigger rendering if opening a DOT file
 	def on_load(self, view):
@@ -224,6 +238,7 @@ class UserEditListener(sublime_plugin.EventListener):
 		if file_syntax == "Packages/Graphviz/DOT.sublime-syntax":
 			view_saving_status.append(view)
 			gvzsettings.update_image_filepath(view.file_name())
+			gvzsettings.update_dot_file_dirname(view.file_name())
 			self.rendering(view)
 
 	# Update the image_filepath when switching between tabs
@@ -231,6 +246,7 @@ class UserEditListener(sublime_plugin.EventListener):
 		file_syntax = view.settings().get('syntax')
 		if file_syntax == "Packages/Graphviz/DOT.sublime-syntax":
 			gvzsettings.update_image_filepath(view.file_name())
+			gvzsettings.update_dot_file_dirname(view.file_name())
 			# No need to render as the image has been rendered when loading or modifying
 
 	def print(self, text):
