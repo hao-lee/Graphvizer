@@ -17,37 +17,37 @@ class GvzSettings():
 		self.st_settings.add_on_change("dot_cmd_path", self.load)
 		self.st_settings.add_on_change("dot_timeout", self.load)
 		self.st_settings.add_on_change("show_image_with", self.load)
-		self.st_settings.add_on_change("image_dir", self.load)
+		self.st_settings.add_on_change("image_dirname", self.load)
 		self.st_settings.add_on_change("render_in_realtime", self.load)
 
 	def load(self):
 		self.dot_cmd_path = self.st_settings.get("dot_cmd_path")
 		self.dot_timeout = self.st_settings.get("dot_timeout")
 		self.show_image_with = self.st_settings.get("show_image_with")
-		self.image_dir = self.st_settings.get("image_dir")
+		self.image_dirname = self.st_settings.get("image_dirname")
 		self.render_in_realtime = self.st_settings.get("render_in_realtime")
 
 	def update_image_filepath(self, dot_filepath):
 		if dot_filepath is None: # Current file is not saved, use temp image file
-			image_filename = "temp~.png"
+			image_basename = "temp~.png"
 		else:
-			image_filename = os.path.splitext(os.path.basename(dot_filepath))[0] + ".png"
+			image_basename = os.path.splitext(os.path.basename(dot_filepath))[0] + ".png"
 		# Use the default path
-		if self.image_dir == "":
-			self.image_filepath = os.path.join(tempfile.gettempdir(), image_filename)
+		if self.image_dirname == "":
+			self.image_filepath = os.path.join(tempfile.gettempdir(), image_basename)
 			return
 		# Check path existence
-		if not os.path.exists(self.image_dir):
-			print("%s doesn't exist. Use the default path instead." %self.image_dir)
-			self.image_filepath = os.path.join(tempfile.gettempdir(), image_filename)
+		if not os.path.exists(self.image_dirname):
+			print("%s doesn't exist. Use the default path instead." %self.image_dirname)
+			self.image_filepath = os.path.join(tempfile.gettempdir(), image_basename)
 			return
 		# Check path permission
-		if not os.access(self.image_dir, os.W_OK):
-			print("%s doesn't have permission to write. Use the default path instead." %self.image_dir)
-			self.image_filepath = os.path.join(tempfile.gettempdir(), image_filename)
+		if not os.access(self.image_dirname, os.W_OK):
+			print("%s doesn't have permission to write. Use the default path instead." %self.image_dirname)
+			self.image_filepath = os.path.join(tempfile.gettempdir(), image_basename)
 			return
-		# OK, use configured image_dir
-		self.image_filepath = os.path.join(self.image_dir, image_filename)
+		# OK, use configured image_dirname
+		self.image_filepath = os.path.join(self.image_dirname, image_basename)
 
 
 class ViewSavingStatus():
