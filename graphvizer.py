@@ -210,6 +210,13 @@ class UserEditListener(sublime_plugin.EventListener):
 			view_saving_status.append(view)
 			gvzsettings.update_image_filepath(view.file_name())
 			self.rendering(view)
+		# Corner case: Copy the content from a dot file and paste to a plain text view,
+		# the view will be set to `DOT` syntax automatically and on_modified() will be
+		# triggered. We must set the image path before on_modified() is called. Otherwise,
+		# image path will be None and subprocess will raise an list2cmdline error.
+		if command_name == "paste" \
+			and view.settings().get('syntax') == "Packages/Graphviz/DOT.sublime-syntax":
+			gvzsettings.update_image_filepath(view.file_name())
 
 	# Trigger rendering if opening a DOT file
 	def on_load(self, view):
