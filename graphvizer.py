@@ -30,15 +30,15 @@ class GvzSettings():
 		self.render_in_realtime = self.st_settings.get("render_in_realtime")
 
 	def update_image_filepath(self, dot_filepath):
-		if dot_filepath is None: # Current file is not saved, use temp image file
+		if dot_filepath is None: # Current file doesn't exist on disk, use temp image file
 			image_basename = "temp~.png"
-		else: # Current file is saved
+		else: # Current file exist on disk
 			image_basename = os.path.splitext(os.path.basename(dot_filepath))[0] + ".png"
 		image_dirname = self.image_dir
-		# Default location is the same directory as the dot file if it is saved.
+		# Default location is the same directory as the dot file if it exist on disk.
 		if image_dirname == "" and dot_filepath is not None:
 			image_dirname = os.path.dirname(dot_filepath)
-		elif image_dirname == "" and dot_filepath is None: # file not saved
+		elif image_dirname == "" and dot_filepath is None: # file doesn't exist on disk
 			image_dirname = tempfile.gettempdir()
 		elif image_dirname == "tmp":
 			image_dirname = tempfile.gettempdir()
@@ -82,7 +82,7 @@ class ViewSavingStatus():
 	def delete(self, view):
 		pass
 
-	def is_saved(self, view):
+	def exist_on_disk(self, view):
 		# corner case: new a empty view and select a exist dot file to overwrite
 		# while saving it. In this case, on_post_text_command() won't be invoked
 		# to append view, but the file syntax is set to DOT. on_pre_save()->is_saved()
@@ -90,7 +90,7 @@ class ViewSavingStatus():
 		# will append the view to dict.
 		return self.saving_status.get(view.id(), False)
 
-	def set_saved(self, view):
+	def set_existence(self, view):
 		self.saving_status[view.id()] = True
 
 
@@ -201,17 +201,17 @@ class UserEditListener(sublime_plugin.EventListener):
 			return
 		self.rendering(view)
 
-	# Update the image_filepath and trigger rendering when the file is saved
+	# Update the image_filepath and trigger rendering when the file is saved on disk for the first time.
 	def on_pre_save(self, view):
 		file_syntax = view.settings().get('syntax')
 		if file_syntax != "Packages/Graphviz/DOT.sublime-syntax":
 			return
 		# The file is saved for the first time
-		if not view_saving_status.is_saved(view):
-			sublime.message_dialog("You save your dot file, so the image filename " \
-				"has been changed according to your filename. Please close temp~.png " \
-				"and reopen image again using keyboard shortcuts or menus.")
-			view_saving_status.set_saved(view)
+		if not view_saving_status.exist_on_disk(view):
+			sublime.message_dialog("This is the first time the file is saved, "\
+								"so the image filename has been changed according to the filename. "\
+								"Please close temp~.png and reopen image again using keyboard shortcuts or menus.")
+			view_saving_status.set_existence(view)
 			gvzsettings.update_image_filepath(view.file_name())
 			gvzsettings.update_dot_file_dirname(view.file_name())
 			self.rendering(view)
