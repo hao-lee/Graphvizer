@@ -24,6 +24,12 @@
 
 ![ctrl+shift+g to open the Graphvizer panel](gif/graphvizer-panel.gif)
 
+### Powerful image viewer
+
+If you think viewing image in Sublime Text is very inconvenient because it doesn't support zoom or pan. You can try [Graphvizer Viewer](https://github.com/hao-lee/GraphvizerViewer) which is created as a supplement for Graphvizer.
+
+![GraphvizerViewer](gif/graphvizerviewer.gif)
+
 # Why do I create this plugin?
 
 `Graphviz` is an awesome visualization tool, but it's very inconvenient to write a dot file by hand. I have to use `dot file.dot -Tpng -o file.png` to render image manually again and again and I don't know whether the syntax is correct or not instantly. `Atom` editor has an excellent plugin called `GraphViz preview+`, but I can't find any plugins like this on `packagecontrol.io`. Finally, I create `Graphvizer`.
