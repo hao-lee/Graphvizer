@@ -93,11 +93,13 @@ The default configurations are as follows. If you want to change some configurat
 	// change the following value to "window". If you just want to show the image
 	// in a new tab, change the value to "tab".
 	"show_image_with": "layout",
-	// "image_dirname" controls where the image is saved. If the value is "",
-	// system temporary directory is used. You can set it to other directory.
+	// "image_dir" controls where the image is saved.
+	// The default value is "" and the image will be saved in the same directory as the dot file.
+	// If the value is "tmp", system temporary directory is used.
+	// You can also set it to other directory according to your need.
 	// Example for Windows: "E:\\homework\\image\\"
 	// Example for Linux/OSX: "/home/haolee/image/"
-	"image_dirname": "",
+	"image_dir": "",
 	// The default behavior is rendering the image in real time.
 	// If set to false, the image will only be rendered when the file is saved.
 	"render_in_realtime": true
@@ -124,7 +126,7 @@ If your monitor is small, you may want to show the image in a new tab to save sp
 
 ### Set the image directory
 
-By default, the generated image will be saved in system temporary directory. If you want to change this default location, you can set `"image_dirname"` according to your needs.
+By default, the value of `image_dir` is `""` and the generated image will be saved in the same directory as the dot file. If the value is `"tmp"`, the image will be saved in system temporary directory. If you want to change the location to other directory, you can set `"image_dir"` to any path according to your needs.
 
 Example for Windows: `"E:\\homework\\image\\"`
 Example for Linux/OSX: `"/home/haolee/image/"`
