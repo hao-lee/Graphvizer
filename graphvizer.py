@@ -28,11 +28,9 @@ class UserEditListener(sublime_plugin.EventListener):
 
 	def __init__(self):
 		super(UserEditListener, self).__init__()
-		self.queue_syntaxchecking = queue.Queue(maxsize=100) # For syntax checking
-		self.queue_rendering = queue.Queue(maxsize=100) # For graph rendering
-		# Start worker thread for syntax checking
-		syntax_thread = threading.Thread(target=self.syntax_thread, daemon=True)
-		syntax_thread.start()
+		self.queued_view = []
+		self.lock = threading.Lock()
+		self.semaphore = threading.Semaphore(value=0) # list is empty
 		# Start worker thread for graph rendering
 		dot_thread = threading.Thread(target=self.dot_thread, daemon=True)
 		dot_thread.start()
@@ -44,11 +42,19 @@ class UserEditListener(sublime_plugin.EventListener):
 		return os.path.join(tempdir, "intermediate.dot")
 
 	def dot_thread(self):
-		while True:
-			# Clear items before the last item
-			while self.queue_rendering.qsize() > 1:
-				self.queue_rendering.get()
-			contents = self.queue_rendering.get(block=True, timeout=None)
+		while self.semaphore.acquire():
+			self.lock.acquire()
+			view = self.queued_view.pop(0)
+			self.lock.release()
+
+			# Get the contents of the whole file
+			region = sublime.Region(0, view.size())
+			contents = view.substr(region)
+			# Check if the syntax is valid
+			syntax_is_valid, log = syntaxchecker.check(contents)
+			self.print(log)
+			if not syntax_is_valid:
+				continue
 
 			'''
 			For purpose of cross-platform, we can't use TemporaryFile class because
@@ -81,25 +87,17 @@ class UserEditListener(sublime_plugin.EventListener):
 			if len(stderr) != 0:
 				self.print(stderr)
 
-	def syntax_thread(self):
-		while True:
-			# Clear items before the last item
-			while self.queue_syntaxchecking.qsize() > 1:
-				self.queue_syntaxchecking.get()
-			contents = self.queue_syntaxchecking.get(block=True, timeout=None)
-			# Check if the syntax is valid
-			syntax_is_valid, log = syntaxchecker.check(contents)
-			self.print(log)
-			if syntax_is_valid:
-				# Put the valid contents into the queue for graph rendering
-				self.queue_rendering.put(contents, block=True, timeout=None)
-
 	def rendering(self, view):
-		# Get the contents of the whole file
-		region = sublime.Region(0, view.size())
-		contents = view.substr(region)
-		# Put the contents into the queue for syntax checking
-		self.queue_syntaxchecking.put(contents, block=True, timeout=None)
+		self.lock.acquire()
+		try:
+			for v in self.queued_view:
+				if view.id() == v.id():
+					return
+			self.queued_view.append(view)
+		finally:
+			self.lock.release()
+
+		self.semaphore.release()
 
 	def on_modified(self, view):
 		'''
