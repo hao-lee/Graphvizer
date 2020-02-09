@@ -16,6 +16,19 @@
 						"caption": "Show Graphvizer Panel",
 						"command": "show_panel",
 						"args": {"panel": "output.graphvizer_panel"}
+					},
+					{
+						"id": "layout_engine",
+						"caption": "Layout Engine",
+						"children":
+						[
+							{"caption": "dot", "command": "set_layout_engine", "args": {"layout_engine": "dot"}, "checkbox": true},
+							{"caption": "neato", "command": "set_layout_engine", "args": {"layout_engine": "neato"}, "checkbox": true},
+							{"caption": "fdp", "command": "set_layout_engine", "args": {"layout_engine": "fdp"}, "checkbox": true},
+							{"caption": "sfdp", "command": "set_layout_engine", "args": {"layout_engine": "sfdp"}, "checkbox": true},
+							{"caption": "twopi", "command": "set_layout_engine", "args": {"layout_engine": "twopi"}, "checkbox": true},
+							{"caption": "circo", "command": "set_layout_engine", "args": {"layout_engine": "circo"}, "checkbox": true}
+						]
 					}
 				]
 			}
