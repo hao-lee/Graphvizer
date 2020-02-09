@@ -6,22 +6,51 @@ import threading, queue
 import subprocess
 import tempfile
 from .command import *
-from .lib import *
 
 
-# Settings
-gvzsettings = None
-# view saving status
-view_saving_status = ViewSavingStatus()
-
-# load settings when the plugin host is ready
-# https://forum.sublimetext.com/t/settings-not-loading-fast-enough/40634
+st_settings = None
 def plugin_loaded():
-	global gvzsettings
-	gvzsettings = GvzSettings()
-	gvzsettings.load()
-	gvzsettings.add_callback()
+	global st_settings
+	st_settings = sublime.load_settings("Graphvizer.sublime-settings")
+	add_callback()
 
+def add_callback():
+	st_settings.add_on_change("dot_cmd_path", reload_settings)
+	st_settings.add_on_change("dot_timeout", reload_settings)
+	st_settings.add_on_change("show_image_with", reload_settings)
+	st_settings.add_on_change("image_dir", reload_settings)
+	st_settings.add_on_change("render_in_realtime", reload_settings)
+
+def reload_settings():
+	print("Graphvizer Settings Changed")
+
+def get_image_filepath(dot_filepath):
+	# image path
+	image_dirname = None
+	if st_settings.get("image_dir") == "": # want to use the same directory as the dot file
+		if dot_filepath is None: # file doesn't exist on disk
+			image_dirname = tempfile.gettempdir()
+		else: # file exist on disk
+			image_dirname = os.path.dirname(dot_filepath)
+	elif st_settings.get("image_dir") == "tmp":
+		image_dirname = tempfile.gettempdir()
+	else: # custom path
+		image_dirname = st_settings.get("image_dir")
+
+	# Check path existence
+	if not os.path.exists(image_dirname):
+		print("%s doesn't exist." %image_dirname)
+	# Check path permission
+	if not os.access(image_dirname, os.W_OK):
+		print("%s doesn't have permission to write." %image_dirname)
+
+	# image basename
+	if dot_filepath is None: # Current file doesn't exist on disk, use temp image file
+		image_basename = "temp~.png"
+	else: # Current file exist on disk
+		image_basename = os.path.splitext(os.path.basename(dot_filepath))[0] + ".png"
+
+	return os.path.join(image_dirname, image_basename)
 
 # Trigged when user input text
 class UserEditListener(sublime_plugin.EventListener):
@@ -40,6 +69,12 @@ class UserEditListener(sublime_plugin.EventListener):
 	def get_intermediate_dot_filepath(self):
 		tempdir = tempfile.gettempdir()
 		return os.path.join(tempdir, "intermediate.dot")
+
+	def get_cwd(self, dot_filepath):
+		if dot_filepath is None:
+			return None
+		else:
+			return os.path.dirname(dot_filepath)
 
 	def dot_thread(self):
 		while self.semaphore.acquire():
@@ -64,7 +99,8 @@ class UserEditListener(sublime_plugin.EventListener):
 			with open(file=self.intermediate_file, mode="w", encoding="utf-8") as fd:
 				fd.write(contents)
 
-			cmd = [gvzsettings.dot_cmd_path, self.intermediate_file, "-Tpng", "-o", gvzsettings.image_filepath]
+			cmd = [st_settings.get("dot_cmd_path"), self.intermediate_file,
+					"-Tpng", "-o", get_image_filepath(view.file_name())]
 			# For Windows, we must use startupinfo to hide the console window.
 			startupinfo = None
 			if os.name == "nt":
@@ -75,10 +111,10 @@ class UserEditListener(sublime_plugin.EventListener):
 			process = subprocess.Popen(cmd, stdout=subprocess.PIPE,
 											stderr=subprocess.PIPE,
 											startupinfo=startupinfo,
-											cwd=gvzsettings.dot_file_dirname)
+											cwd=self.get_cwd(view.file_name()))
 			# Terminate the dot process if it takes too long to complete.
 			try:
-				stdout, stderr = process.communicate(timeout=gvzsettings.dot_timeout)
+				stdout, stderr = process.communicate(timeout=st_settings.get("dot_timeout"))
 			except subprocess.TimeoutExpired:
 				process.kill()
 				stdout, stderr = process.communicate()
@@ -110,7 +146,7 @@ class UserEditListener(sublime_plugin.EventListener):
 		file_syntax = view.settings().get('syntax')
 		if file_syntax != "Packages/Graphviz/DOT.sublime-syntax":
 			return
-		if not gvzsettings.render_in_realtime:
+		if not st_settings.get("render_in_realtime"):
 			return
 		self.rendering(view)
 
@@ -120,48 +156,29 @@ class UserEditListener(sublime_plugin.EventListener):
 		if file_syntax != "Packages/Graphviz/DOT.sublime-syntax":
 			return
 		# The file is saved for the first time
-		if not view_saving_status.exist_on_disk(view):
+		if view.settings().get("persistence") is None:
 			sublime.message_dialog("This is the first time the file is saved, "\
 								"so the image filename has been changed according to the filename. "\
 								"Please close temp~.png and reopen image again using keyboard shortcuts or menus.")
-			view_saving_status.set_existence(view)
-			gvzsettings.update_image_filepath(view.file_name())
-			gvzsettings.update_dot_file_dirname(view.file_name())
+			view.settings().set("persistence", True)
 			self.rendering(view)
 
 	# Trigger rendering if setting the file syntax to DOT
 	def on_post_text_command(self, view, command_name, args):
 		if command_name == "set_file_type" \
 				and args["syntax"] == "Packages/Graphviz/DOT.sublime-syntax":
-			view_saving_status.append(view)
-			gvzsettings.update_image_filepath(view.file_name())
-			gvzsettings.update_dot_file_dirname(view.file_name())
+			if view.file_name() is None:
+				pass
+			else:
+				view.settings().set("persistence", True)
 			self.rendering(view)
-		# Corner case: Copy the content from a dot file and paste to a plain text view,
-		# the view will be set to `DOT` syntax automatically and on_modified() will be
-		# triggered. We must set the image path before on_modified() is called. Otherwise,
-		# image path will be None and subprocess will raise an list2cmdline error.
-		if command_name == "paste" \
-			and view.settings().get('syntax') == "Packages/Graphviz/DOT.sublime-syntax":
-			gvzsettings.update_image_filepath(view.file_name())
-			gvzsettings.update_dot_file_dirname(view.file_name())
 
 	# Trigger rendering if opening a DOT file
 	def on_load(self, view):
 		file_syntax = view.settings().get('syntax')
 		if file_syntax == "Packages/Graphviz/DOT.sublime-syntax":
-			view_saving_status.append(view)
-			gvzsettings.update_image_filepath(view.file_name())
-			gvzsettings.update_dot_file_dirname(view.file_name())
+			view.settings().set("persistence", True)
 			self.rendering(view)
-
-	# Update the image_filepath when switching between tabs
-	def on_activated(self, view):
-		file_syntax = view.settings().get('syntax')
-		if file_syntax == "Packages/Graphviz/DOT.sublime-syntax":
-			gvzsettings.update_image_filepath(view.file_name())
-			gvzsettings.update_dot_file_dirname(view.file_name())
-			# No need to render as the image has been rendered when loading or modifying
 
 	def print(self, text):
 		# Get the active window as current main window
@@ -176,43 +193,43 @@ class GraphvizerOpenImageCommand(sublime_plugin.WindowCommand):
 		super(GraphvizerOpenImageCommand, self).__init__(window)
 
 	def run(self):
-		if gvzsettings.show_image_with == "window":
+		if st_settings.get("show_image_with") == "window":
 			self.open_image_window()
-		elif gvzsettings.show_image_with == "layout":
+		elif st_settings.get("show_image_with") == "layout":
 			self.open_image_layout()
 		else:
 			self.open_image_tab()
 
-	def check_image_filepath(self):
-		if gvzsettings.image_filepath is None:
-			sublime.message_dialog("Image has not been rendered!")
-			return False
-		return True
-
 	def open_image_window(self):
-		if not self.check_image_filepath():
-			return
-		sublime.run_command("new_window")
-		image_window = sublime.active_window()
-		image_window.open_file(gvzsettings.image_filepath)
-		image_window.set_menu_visible(False)
-		image_window.set_tabs_visible(False)
-		image_window.set_minimap_visible(False)
-		image_window.set_status_bar_visible(False)
+		image_filepath = get_image_filepath(self.window.active_view().file_name())
+		if os.path.isfile(image_filepath):
+			sublime.run_command("new_window")
+			image_window = sublime.active_window()
+			image_window.open_file(image_filepath)
+			image_window.set_menu_visible(False)
+			image_window.set_tabs_visible(False)
+			image_window.set_minimap_visible(False)
+			image_window.set_status_bar_visible(False)
+		else:
+			sublime.message_dialog("Image has not been rendered!")
 
 	def open_image_layout(self):
-		if not self.check_image_filepath():
-			return
-		self.window.set_layout({
-			"cols": [0.0, 0.5, 1.0],
-			"rows": [0.0, 1.0],
-			"cells": [[0, 0, 1, 1], [1, 0, 2, 1]]
-		})
-		self.window.focus_group(1)
-		self.window.open_file(gvzsettings.image_filepath)
-		self.window.focus_group(0)
+		image_filepath = get_image_filepath(self.window.active_view().file_name())
+		if os.path.isfile(image_filepath):
+			self.window.set_layout({
+				"cols": [0.0, 0.5, 1.0],
+				"rows": [0.0, 1.0],
+				"cells": [[0, 0, 1, 1], [1, 0, 2, 1]]
+			})
+			self.window.focus_group(1)
+			self.window.open_file(image_filepath)
+			self.window.focus_group(0)
+		else:
+			sublime.message_dialog("Image has not been rendered!")
 
 	def open_image_tab(self):
-		if not self.check_image_filepath():
-			return
-		self.window.open_file(gvzsettings.image_filepath)
+		image_filepath = get_image_filepath(self.window.active_view().file_name())
+		if os.path.isfile(image_filepath):
+			self.window.open_file(image_filepath)
+		else:
+			sublime.message_dialog("Image has not been rendered!")
