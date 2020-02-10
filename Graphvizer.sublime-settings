@@ -26,5 +26,7 @@
 	// If set to false, the image will only be rendered when the file is saved.
 	"render_in_realtime": true,
 	// Default layout engine. Valid values including dot, neato, fdp, sfdp, twopi and circo.
-	"default_layout_engine": "dot"
+	"default_layout_engine": "dot",
+	// Default output format. Valid values including png, jpg, svg, pdf, gif, bmp, ps, ps2 and psd.
+	"default_output_format": "png"
 }
