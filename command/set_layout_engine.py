@@ -20,3 +20,9 @@ class SetLayoutEngineCommand(sublime_plugin.TextCommand):
 		if layout_engine == self.view.settings().get("layout_engine"):
 			return True
 		return False
+
+	def is_enabled(self):
+		if self.view.settings().get("syntax") == "Packages/Graphviz/DOT.sublime-syntax":
+			return True
+		else:
+			return False
