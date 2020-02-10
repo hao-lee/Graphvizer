@@ -28,5 +28,9 @@
 	// Default layout engine. Valid values including dot, neato, fdp, sfdp, twopi and circo.
 	"default_layout_engine": "dot",
 	// Default output format. Valid values including png, jpg, svg, pdf, gif, bmp, ps, ps2 and psd.
+	// NOTE: the dot command also supports many other formats as detailed in the below link.
+	// https://graphviz.gitlab.io/_pages/doc/info/output.html
+	// You can certainly use any of them as the value of default_output_format, but these formats
+	// won't be shown in Tools->Graphvizer->Output Format menu.
 	"default_output_format": "png"
 }
