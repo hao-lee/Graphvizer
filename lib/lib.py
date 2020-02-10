@@ -6,7 +6,7 @@ def get_image_filepath(st_settings, view):
 	dot_filepath = view.file_name()
 	# image path
 	image_dirname = None
-	if st_settings.get("image_dir") == "": # want to use the same directory as the dot file
+	if st_settings.get("image_dir") == "same": # want to use the same directory as the dot file
 		if dot_filepath is None: # file doesn't exist on disk
 			image_dirname = tempfile.gettempdir()
 		else: # file exist on disk
