@@ -76,6 +76,11 @@ class UserEditListener(sublime_plugin.EventListener):
 		else:
 			return os.path.dirname(dot_filepath)
 
+	def get_layout_engine(self):
+		layout_engine = view.settings().get("layout_engine")
+		if layout_engine is None: # layout engine has not been initialized
+			layout_engine = st_settings.get("default_layout_engine")
+
 	def dot_thread(self):
 		while self.semaphore.acquire():
 			self.lock.acquire()
@@ -100,6 +105,7 @@ class UserEditListener(sublime_plugin.EventListener):
 				fd.write(contents)
 
 			cmd = [st_settings.get("dot_cmd_path"), self.intermediate_file,
+					"-K"+self.get_layout_engine(),
 					"-Tpng", "-o", get_image_filepath(view.file_name())]
 			# For Windows, we must use startupinfo to hide the console window.
 			startupinfo = None

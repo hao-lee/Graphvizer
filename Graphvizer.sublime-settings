@@ -24,5 +24,7 @@
 	"image_dir": "",
 	// The default behavior is rendering the image in real time.
 	// If set to false, the image will only be rendered when the file is saved.
-	"render_in_realtime": true
+	"render_in_realtime": true,
+	// Default layout engine. Valid values including dot, neato, fdp, sfdp, twopi and circo.
+	"default_layout_engine": "dot"
 }
