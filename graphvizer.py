@@ -26,11 +26,11 @@ def reload_settings():
 	print("Graphvizer Settings Changed")
 
 
-# Trigged when user input text
-class UserEditListener(sublime_plugin.EventListener):
+# Core code
+class CoreListener(sublime_plugin.EventListener):
 
 	def __init__(self):
-		super(UserEditListener, self).__init__()
+		super(CoreListener, self).__init__()
 		self.queued_view = []
 		self.lock = threading.Lock()
 		self.semaphore = threading.Semaphore(value=0) # list is empty
