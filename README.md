@@ -182,6 +182,12 @@ The default key bindings are as follows. If you want to change the default key b
 
 ---
 
+# Known Issues
+
+The rendering process won't be triggered during Sublime Text startup. This means if you double click a dot file to launch Sublime Text, the corresponding image won't be generated. This behavior is because Sublime Text doesn't invoke `on_load()` function on its first launch. There is [an issue](https://github.com/sublimehq/sublime_text/issues/5) about this problem. [Other people](https://forum.sublimetext.com/t/on-load-eventlistener-not-called-on-first-launch/29105) also encountered it. The workaround is so weird that I don't want to fix this. You may need to make some changes in your dot code to trigger the rendering.
+
+---
+
 # To-Do List
 
 - [x] Configure the `dot` command path in `Settings`.
