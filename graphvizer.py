@@ -169,4 +169,4 @@ class UserEditListener(sublime_plugin.EventListener):
 	def print(self, text):
 		# Get the active window as current main window
 		current_window = sublime.active_window()
-		current_window.run_command("graphvizer_print_to_panel", {"text": text})
+		current_window.run_command("print_to_panel", {"text": text})

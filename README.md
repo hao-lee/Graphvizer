@@ -149,7 +149,7 @@ The default key bindings are as follows. If you want to change the default key b
 [
 	{
 		"keys": ["ctrl+shift+g"],
-		"command": "graphvizer_open_image",
+		"command": "open_image",
 		"context":
 		[
 			{"key": "selector", "operator": "equal", "operand": "source.dot"}
