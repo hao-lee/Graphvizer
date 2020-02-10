@@ -1,0 +1,5 @@
+* Support specifying image output format
+* Supporting specifying layout engine
+* Introduce Graphvizer Viewer
+* Save the image in the same directory as the dot file by default
+* Set cwd for dot command to support shapefile attribute
