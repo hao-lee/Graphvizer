@@ -100,15 +100,24 @@ The default configurations are as follows. If you want to change some configurat
 	// in a new tab, change the value to "tab".
 	"show_image_with": "layout",
 	// "image_dir" controls where the image is saved.
-	// The default value is "" and the image will be saved in the same directory as the dot file.
+	// The default value is "same" which means the image will be saved in the same
+	// directory as the dot file.
 	// If the value is "tmp", system temporary directory is used.
-	// You can also set it to other directory according to your need.
+	// You can also set it to an arbitrary directory according to your needs.
 	// Example for Windows: "E:\\homework\\image\\"
 	// Example for Linux/OSX: "/home/haolee/image/"
-	"image_dir": "",
+	"image_dir": "same",
 	// The default behavior is rendering the image in real time.
 	// If set to false, the image will only be rendered when the file is saved.
-	"render_in_realtime": true
+	"render_in_realtime": true,
+	// Default layout engine. Valid values including dot, neato, fdp, sfdp, twopi and circo.
+	"default_layout_engine": "dot",
+	// Default output format. Valid values including png, jpg, svg, pdf, gif, bmp, ps, ps2 and psd.
+	// NOTE: the dot command also supports many other formats as detailed in the below link.
+	// https://graphviz.gitlab.io/_pages/doc/info/output.html
+	// You can certainly use any of them as the value of default_output_format, but these formats
+	// won't be shown in Tools->Graphvizer->Output Format menu.
+	"default_output_format": "png"
 }
 ```
 
@@ -128,11 +137,11 @@ You can also use a new window to show the image. This is flexible in some cases,
 
 If your monitor is small, you may want to show the image in a new tab to save space. To do this, change the value to `"tab"`.
 
-(You may need to restart Sublime Text 3 to take effects.)
+(You may need to restart Sublime Text 3 to take effect.)
 
 ### Set the image directory
 
-By default, the value of `image_dir` is `""` and the generated image will be saved in the same directory as the dot file. If the value is `"tmp"`, the image will be saved in system temporary directory. If you want to change the location to other directory, you can set `"image_dir"` to any path according to your needs.
+By default, the value of `"image_dir"` is `"same"` which means the generated image will be saved in the same directory as the dot file. If the value is `"tmp"`, the image will be saved in system temporary directory. If you want to change the location to other directory, you can set `"image_dir"` to any path according to your needs.
 
 Example for Windows: `"E:\\homework\\image\\"`
 Example for Linux/OSX: `"/home/haolee/image/"`
@@ -141,9 +150,13 @@ Example for Linux/OSX: `"/home/haolee/image/"`
 
 By default, the image is rendered in real time. If you only want the image to be rendered when the file is saved, you can set `"render_in_realtime"` to `false`.
 
+## Set the default layout engine
+
+By default, this plugin uses `dot` engine to render images just as you pass `-Kdot` argument to `dot` command. If you want to use other engines including `neato`, `fdp`, `sfdp`, `twopi` and `circo`, just set `"default_layout_engine"` to engine name.
+
 # Key Bindings
 
-The default key bindings are as follows. If you want to change the default key bindings. Open `Preference -> Package Settings -> Graphvizer -> Key Bindings - User` and copy the following content to the opened file. Save it after changing `ctrl+shift+g` or `ctrl+shift+x` to other shortcuts according to your needs.
+The default key bindings are as follows. If you want to change the default key bindings. Open `Preference -> Package Settings -> Graphvizer -> Key Bindings - User` and copy the following content to the opened file. Save it after changing `ctrl+shift+g` or `ctrl+shift+x` to other shortcuts according to your needs. (The below example is for Windows.)
 
 ```
 [
@@ -178,6 +191,11 @@ The default key bindings are as follows. If you want to change the default key b
 - [x] Set timeout for `dot` command.
 - [x] Being able to set the image directory.
 - [x] Render the image when the file is saved.
+- [x] Support specifying image output format
+- [x] Supporting specifying layout engine
+- [x] Introduce Graphvizer Viewer
+- [x] Save the image in the same directory as the dot file by default
+- [x] Set cwd for dot command to support shapefile attribute
 * For other features, please open an issue.
 
 # LICENSE
