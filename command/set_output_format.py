@@ -19,7 +19,8 @@ class SetOutputFormatCommand(sublime_plugin.TextCommand):
 
 		if output_format == self.view.settings().get("output_format"):
 			return True
-		return False
+		else:
+			return False
 
 	def is_enabled(self):
 		return True
