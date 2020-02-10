@@ -13,9 +13,9 @@ st_settings = None
 def plugin_loaded():
 	global st_settings
 	st_settings = sublime.load_settings("Graphvizer.sublime-settings")
-	add_callback()
+	add_st_settings_callback()
 
-def add_callback():
+def add_st_settings_callback():
 	st_settings.add_on_change("dot_cmd_path", reload_settings)
 	st_settings.add_on_change("dot_timeout", reload_settings)
 	st_settings.add_on_change("show_image_with", reload_settings)
