@@ -29,6 +29,22 @@
 							{"caption": "twopi", "command": "set_layout_engine", "args": {"layout_engine": "twopi"}, "checkbox": true},
 							{"caption": "circo", "command": "set_layout_engine", "args": {"layout_engine": "circo"}, "checkbox": true}
 						]
+					},
+					{
+						"id": "output format",
+						"caption": "Output Format",
+						"children":
+						[
+							{"caption": "png", "command": "set_output_format", "args": {"output_format": "png"}, "checkbox": true},
+							{"caption": "jpg", "command": "set_output_format", "args": {"output_format": "jpg"}, "checkbox": true},
+							{"caption": "svg", "command": "set_output_format", "args": {"output_format": "svg"}, "checkbox": true},
+							{"caption": "pdf", "command": "set_output_format", "args": {"output_format": "pdf"}, "checkbox": true},
+							{"caption": "gif", "command": "set_output_format", "args": {"output_format": "gif"}, "checkbox": true},
+							{"caption": "bmp", "command": "set_output_format", "args": {"output_format": "bmp"}, "checkbox": true},
+							{"caption": "ps", "command": "set_output_format", "args": {"output_format": "ps"}, "checkbox": true},
+							{"caption": "ps2", "command": "set_output_format", "args": {"output_format": "ps2"}, "checkbox": true},
+							{"caption": "psd", "command": "set_output_format", "args": {"output_format": "psd"}, "checkbox": true}
+						]
 					}
 				]
 			}
