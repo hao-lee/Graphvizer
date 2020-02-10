@@ -2,7 +2,8 @@ import tempfile
 import os
 
 
-def get_image_filepath(st_settings, dot_filepath):
+def get_image_filepath(st_settings, view):
+	dot_filepath = view.file_name()
 	# image path
 	image_dirname = None
 	if st_settings.get("image_dir") == "": # want to use the same directory as the dot file
