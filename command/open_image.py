@@ -5,10 +5,10 @@ from ..lib import *
 
 
 # Open image file
-class GraphvizerOpenImageCommand(sublime_plugin.WindowCommand):
+class OpenImageCommand(sublime_plugin.WindowCommand):
 
 	def __init__(self, window):
-		super(GraphvizerOpenImageCommand, self).__init__(window)
+		super(OpenImageCommand, self).__init__(window)
 		self.st_settings = sublime.load_settings("Graphvizer.sublime-settings")
 
 	def run(self):

@@ -10,7 +10,7 @@
 				[
 					{
 						"caption": "Open Rendered Image",
-						"command": "graphvizer_open_image"
+						"command": "open_image"
 					},
 					{
 						"caption": "Show Graphvizer Panel",
