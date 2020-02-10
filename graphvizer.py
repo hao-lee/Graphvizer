@@ -152,9 +152,8 @@ class UserEditListener(sublime_plugin.EventListener):
 		file_syntax = view.settings().get('syntax')
 		if file_syntax != "Packages/Graphviz/DOT.sublime-syntax":
 			return
-		if not st_settings.get("render_in_realtime"):
-			return
-		self.rendering(view)
+		if st_settings.get("render_in_realtime"):
+			self.rendering(view)
 
 	# Update the image_filepath and trigger rendering when the file is saved on disk for the first time.
 	def on_pre_save(self, view):
@@ -167,6 +166,10 @@ class UserEditListener(sublime_plugin.EventListener):
 								"so the image filename has been changed according to the filename. "\
 								"Please close temp~.png and reopen image again using keyboard shortcuts or menus.")
 			view.settings().set("persistence", True)
+
+		# If `render_in_realtime` is enabled, we don't need to render on save as this
+		# has been done in on_modified().
+		if not st_settings.get("render_in_realtime"):
 			self.rendering(view)
 
 	# Trigger rendering if setting the file syntax to DOT
@@ -177,14 +180,16 @@ class UserEditListener(sublime_plugin.EventListener):
 				pass
 			else:
 				view.settings().set("persistence", True)
-			self.rendering(view)
+			if st_settings.get("render_in_realtime"):
+				self.rendering(view)
 
 	# Trigger rendering if opening a DOT file
 	def on_load(self, view):
 		file_syntax = view.settings().get('syntax')
 		if file_syntax == "Packages/Graphviz/DOT.sublime-syntax":
 			view.settings().set("persistence", True)
-			self.rendering(view)
+			if st_settings.get("render_in_realtime"):
+				self.rendering(view)
 
 	def print(self, text):
 		# Get the active window as current main window
