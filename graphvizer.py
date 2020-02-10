@@ -81,7 +81,7 @@ class UserEditListener(sublime_plugin.EventListener):
 
 			cmd = [st_settings.get("dot_cmd_path"), self.intermediate_file,
 					"-K"+self.get_layout_engine(view),
-					"-Tpng", "-o", get_image_filepath(st_settings, view.file_name())]
+					"-Tpng", "-o", get_image_filepath(st_settings, view)]
 			# For Windows, we must use startupinfo to hide the console window.
 			startupinfo = None
 			if os.name == "nt":

@@ -20,7 +20,7 @@ class GraphvizerOpenImageCommand(sublime_plugin.WindowCommand):
 			self.open_image_tab()
 
 	def open_image_window(self):
-		image_filepath = get_image_filepath(self.st_settings, self.window.active_view().file_name())
+		image_filepath = get_image_filepath(self.st_settings, self.window.active_view())
 		if os.path.isfile(image_filepath):
 			sublime.run_command("new_window")
 			image_window = sublime.active_window()
@@ -33,7 +33,7 @@ class GraphvizerOpenImageCommand(sublime_plugin.WindowCommand):
 			sublime.message_dialog("Image has not been rendered!")
 
 	def open_image_layout(self):
-		image_filepath = get_image_filepath(self.st_settings, self.window.active_view().file_name())
+		image_filepath = get_image_filepath(self.st_settings, self.window.active_view())
 		if os.path.isfile(image_filepath):
 			self.window.set_layout({
 				"cols": [0.0, 0.5, 1.0],
@@ -47,7 +47,7 @@ class GraphvizerOpenImageCommand(sublime_plugin.WindowCommand):
 			sublime.message_dialog("Image has not been rendered!")
 
 	def open_image_tab(self):
-		image_filepath = get_image_filepath(self.st_settings, self.window.active_view().file_name())
+		image_filepath = get_image_filepath(self.st_settings, self.window.active_view())
 		if os.path.isfile(image_filepath):
 			self.window.open_file(image_filepath)
 		else:
