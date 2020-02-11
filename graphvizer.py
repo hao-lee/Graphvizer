@@ -5,7 +5,10 @@ from . import syntaxchecker
 import threading, queue
 import subprocess
 import tempfile
+# Although this file don't use modules in command/ directory, we still need to import it.
+# Otherwise these commands won't be recognized by Sublime and key bindings will not work.
 from .command import *
+# import some auxiliary functions
 from .lib import *
 
 
