@@ -19,13 +19,13 @@ def plugin_loaded():
 	add_st_settings_callback()
 
 def add_st_settings_callback():
-	st_settings.add_on_change("dot_cmd_path", reload_settings)
-	st_settings.add_on_change("dot_timeout", reload_settings)
-	st_settings.add_on_change("show_image_with", reload_settings)
-	st_settings.add_on_change("image_dir", reload_settings)
-	st_settings.add_on_change("render_in_realtime", reload_settings)
+	st_settings.add_on_change("dot_cmd_path", st_settings_changes)
+	st_settings.add_on_change("dot_timeout", st_settings_changes)
+	st_settings.add_on_change("show_image_with", st_settings_changes)
+	st_settings.add_on_change("image_dir", st_settings_changes)
+	st_settings.add_on_change("render_in_realtime", st_settings_changes)
 
-def reload_settings():
+def st_settings_changes():
 	print("Graphvizer Settings Changed")
 
 
