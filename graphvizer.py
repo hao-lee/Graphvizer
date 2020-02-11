@@ -56,12 +56,6 @@ class CoreListener(sublime_plugin.EventListener):
 			layout_engine = st_settings.get("default_layout_engine")
 		return layout_engine
 
-	def get_output_format(self, view):
-		output_format = view.settings().get("output_format")
-		if output_format is None: # output format has not been initialized
-			output_format = st_settings.get("default_output_format")
-		return output_format
-
 	def dot_thread(self):
 		while self.semaphore.acquire():
 			self.lock.acquire()

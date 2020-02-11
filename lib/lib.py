@@ -2,6 +2,12 @@ import tempfile
 import os
 
 
+def get_output_format(st_settings, view):
+	output_format = view.settings().get("output_format")
+	if output_format is None: # output format has not been initialized
+		output_format = st_settings.get("default_output_format")
+	return output_format
+
 def get_image_filepath(st_settings, view):
 	dot_filepath = view.file_name()
 	# image path
