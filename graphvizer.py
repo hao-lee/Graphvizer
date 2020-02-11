@@ -44,7 +44,8 @@ class CoreListener(sublime_plugin.EventListener):
 		tempdir = tempfile.gettempdir()
 		return os.path.join(tempdir, "intermediate.dot")
 
-	def get_cwd(self, dot_filepath):
+	def get_cwd(self, view):
+		dot_filepath = view.file_name()
 		if dot_filepath is None:
 			return None
 		else:
@@ -93,7 +94,7 @@ class CoreListener(sublime_plugin.EventListener):
 			process = subprocess.Popen(cmd, stdout=subprocess.PIPE,
 											stderr=subprocess.PIPE,
 											startupinfo=startupinfo,
-											cwd=self.get_cwd(view.file_name()))
+											cwd=self.get_cwd(view))
 			# Terminate the dot process if it takes too long to complete.
 			try:
 				stdout, stderr = process.communicate(timeout=st_settings.get("dot_timeout"))
