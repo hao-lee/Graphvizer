@@ -81,8 +81,8 @@ class CoreListener(sublime_plugin.EventListener):
 				fd.write(contents)
 
 			cmd = [st_settings.get("dot_cmd_path"), self.intermediate_file,
-					"-K"+self.get_layout_engine(view),
-					"-T"+self.get_output_format(view),
+					"-K" + self.get_layout_engine(view),
+					"-T" + get_output_format(st_settings, view),
 					"-o", get_image_filepath(st_settings, view)]
 			# For Windows, we must use startupinfo to hide the console window.
 			startupinfo = None
