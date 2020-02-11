@@ -1,6 +1,7 @@
 import sublime
 import sublime_plugin
 import os
+import sys
 from . import syntaxchecker
 import threading, queue
 import subprocess
@@ -17,6 +18,17 @@ def plugin_loaded():
 	global st_settings
 	st_settings = sublime.load_settings("Graphvizer.sublime-settings")
 	add_st_settings_callback()
+	# The file views and unsaved views opened during Sublime Text startup won't trigger any member
+	# function in CoreListener class. We must scan all views and filter the DOT views. Then
+	# we will render the image for each DOT view and set a suitable saving status for it.
+	_mod = sys.modules[__name__]
+	core_listener = _mod.__plugins__[0]
+	for view in sublime.active_window().views():
+		if view.settings().get('syntax') != "Packages/Graphviz/DOT.sublime-syntax":
+			continue
+		core_listener.rendering(view) # Initial rendering
+		if view.file_name() is not None: # File exists on disk
+			view.settings().set("persistence", True) # Set a suitable saving status for this DOT view
 
 def add_st_settings_callback():
 	st_settings.add_on_change("dot_cmd_path", st_settings_changes)
@@ -163,7 +175,9 @@ class CoreListener(sublime_plugin.EventListener):
 			if st_settings.get("render_in_realtime"):
 				self.rendering(view)
 
-	# Trigger rendering if opening a DOT file
+	# Called condition: open a *file* while Sublime Text has already been started.
+	# The file opened automatically during Sublime Text startup won't trigger this function.
+	# New a view won't trigger this function.
 	def on_load(self, view):
 		file_syntax = view.settings().get('syntax')
 		if file_syntax == "Packages/Graphviz/DOT.sublime-syntax":
