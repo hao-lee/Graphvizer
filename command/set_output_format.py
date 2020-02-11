@@ -15,7 +15,7 @@ class SetOutputFormatCommand(sublime_plugin.TextCommand):
 			self.view.settings().set("output_format", output_format)
 			_mod = sys.modules["Graphvizer.graphvizer"]
 			core_listener = _mod.__plugins__[0]
-			core_listener.on_load(self.view) # trigger render image
+			core_listener.rendering(self.view) # render image
 
 	# Called when menu is shown. Used to determine whether a menu should be checked.
 	def is_checked(self, output_format):
