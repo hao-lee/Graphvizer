@@ -1,5 +1,6 @@
 import sublime
 import sublime_plugin
+import sys
 
 
 class SetLayoutEngineCommand(sublime_plugin.TextCommand):
@@ -9,7 +10,13 @@ class SetLayoutEngineCommand(sublime_plugin.TextCommand):
 
 	# Called when menu is checked
 	def run(self, edit, layout_engine):
-		self.view.settings().set("layout_engine", layout_engine)
+		old_layout_engine = self.view.settings().get("layout_engine")
+		if old_layout_engine != layout_engine:
+			self.view.settings().set("layout_engine", layout_engine)
+			# https://github.com/sublimehq/sublime_text/issues/5#issuecomment-17322337
+			_mod = sys.modules["Graphvizer.graphvizer"] # print(__name__) in graphvizer.py give us this string
+			core_listener = _mod.__plugins__[0]
+			core_listener.on_load(self.view) # trigger render image
 
 	# Called when menu is shown. Used to determine whether a menu should be checked.
 	def is_checked(self, layout_engine):
