@@ -56,6 +56,12 @@ class CoreListener(sublime_plugin.EventListener):
 			layout_engine = st_settings.get("default_layout_engine")
 		return layout_engine
 
+	def get_output_format(self, view):
+		output_format = view.settings().get("output_format")
+		if output_format is None: # output format has not been initialized
+			output_format = st_settings.get("default_output_format")
+		return output_format
+
 	def dot_thread(self):
 		while self.semaphore.acquire():
 			self.lock.acquire()
@@ -81,7 +87,8 @@ class CoreListener(sublime_plugin.EventListener):
 
 			cmd = [st_settings.get("dot_cmd_path"), self.intermediate_file,
 					"-K"+self.get_layout_engine(view),
-					"-Tpng", "-o", get_image_filepath(st_settings, view)]
+					"-T"+self.get_output_format(view),
+					"-o", get_image_filepath(st_settings, view)]
 			# For Windows, we must use startupinfo to hide the console window.
 			startupinfo = None
 			if os.name == "nt":
