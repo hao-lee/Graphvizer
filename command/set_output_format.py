@@ -1,5 +1,6 @@
 import sublime
 import sublime_plugin
+import sys
 
 
 class SetOutputFormatCommand(sublime_plugin.TextCommand):
@@ -9,7 +10,12 @@ class SetOutputFormatCommand(sublime_plugin.TextCommand):
 
 	# Called when menu is checked
 	def run(self, edit, output_format):
-		self.view.settings().set("output_format", output_format)
+		old_output_format = self.view.settings().get("output_format")
+		if old_output_format != output_format:
+			self.view.settings().set("output_format", output_format)
+			_mod = sys.modules["Graphvizer.graphvizer"]
+			core_listener = _mod.__plugins__[0]
+			core_listener.on_load(self.view) # trigger render image
 
 	# Called when menu is shown. Used to determine whether a menu should be checked.
 	def is_checked(self, output_format):
