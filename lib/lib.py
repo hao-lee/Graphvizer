@@ -31,8 +31,9 @@ def get_image_filepath(st_settings, view):
 
 	# image basename
 	if dot_filepath is None: # Current file doesn't exist on disk, use temp image file
-		image_basename = "temp~.png"
+		image_basename = "temp~." + get_output_format(st_settings, view)
 	else: # Current file exist on disk
-		image_basename = os.path.splitext(os.path.basename(dot_filepath))[0] + ".png"
+		image_basename = os.path.splitext(os.path.basename(dot_filepath))[0] \
+								+ "." + get_output_format(st_settings, view)
 
 	return os.path.join(image_dirname, image_basename)
