@@ -1,6 +1,6 @@
 # Graphvizer
 
-`Graphvizer` is a `Graphviz` plugin for Sublime Text 3. It can render the image automatically in real-time while you are editing the `dot` language file. What you need to do is just editing your file at the speed of thought and this plugin will do other things for you. If your dot file has syntax errors, the plugin will give you some messages.
+`Graphvizer` is a `Graphviz` plugin for Sublime Text 3. It can render the image automatically in real time while you are editing the `dot` language file. What you need to do is just editing your file at the speed of thought and this plugin will do other things for you. If your dot file has syntax errors, the plugin will give you some messages.
 
 # Features
 
@@ -93,7 +93,7 @@ I will release a new version if someone reports a bug or if I have a new idea. Y
 
 # Configurations
 
-The default configurations are as follows. If you want to change some configurations, open `Preference -> Package Settings -> Graphvizer -> Settings - User` and copy the following content to the opened file. Save it after modifying it according to your needs. The meaning of each configuration is explained subsequently.
+The default configurations are as follows. If you want to change some configurations, open `Preference -> Package Settings -> Graphvizer -> Settings - User` and paste the following content to the opened file. Save it after modifying it according to your needs. The meaning of each configuration is explained subsequently.
 
 ```
 {
@@ -147,7 +147,7 @@ If you are editing a very large graph, the `dot` command may need a long time to
 
 By default, the plugin will show the image in a separated layout.
 
-You can also use a new window to show the image. This is flexible in some cases, especially when you have two monitors. Just change the value of `"show_image_with"` from `"layout"` to `"window"` and save it.
+You can also use a new window to show the image. Just change the value of `"show_image_with"` from `"layout"` to `"window"` and save it. This is flexible in some cases, especially when you have two monitors.
 
 If your monitor is small, you may want to show the image in a new tab to save space. To do this, change the value to `"tab"`.
 
@@ -166,11 +166,11 @@ By default, the image is rendered in real time. If you only want the image to be
 
 ## Set the default layout engine
 
-By default, this plugin uses `dot` engine to render images just as you pass `-Kdot` argument to `dot` command. If you want to use other engines including `neato`, `fdp`, `sfdp`, `twopi` and `circo`, just set `"default_layout_engine"` to engine name.
+By default, this plugin uses `dot` engine to render images just as you pass `-Kdot` argument to `dot` command. If you want to use other engines including `neato`, `fdp`, `sfdp`, `twopi` and `circo`, set `"default_layout_engine"` to engine name.
 
 # Key Bindings
 
-The default key bindings are as follows. If you want to change the default key bindings. Open `Preference -> Package Settings -> Graphvizer -> Key Bindings - User` and copy the following content to the opened file. Save it after changing `ctrl+shift+g` or `ctrl+shift+x` to other shortcuts according to your needs. (The below example is for Windows.)
+You can get key binding configurations through `Preference -> Package Settings -> Graphvizer -> Key Bindings - Default`. The below example is for Windows. If you want to change the default key bindings, open `Preference -> Package Settings -> Graphvizer -> Key Bindings - User` and paste the default configurations into it. Save it after changing `ctrl+shift+g` or `ctrl+shift+x` to other shortcuts according to your needs.
 
 ```
 [
@@ -210,6 +210,7 @@ The default key bindings are as follows. If you want to change the default key b
 - [x] Introduce Graphvizer Viewer
 - [x] Save the image in the same directory as the dot file by default
 - [x] Set cwd for dot command to support shapefile attribute
+- [] Integrate GraphvizerViewer with Graphvizer
 * For other features, please open an issue.
 
 # LICENSE
