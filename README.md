@@ -1,12 +1,14 @@
 # Graphvizer
 
-`Graphvizer` is a `Graphviz` plugin for Sublime Text 3. It can make your experience more pleasant when editing a `dot` language file. You just need to edit your file at the speed of thought and this plugin will render the image and refresh it in real time. If the syntax is invalid, the plugin will show you some error messages.
+`Graphvizer` is a `Graphviz` plugin for Sublime Text 3. It can render the image automatically in real-time while you are editing the `dot` language file. What you need to do is just editing your file at the speed of thought and this plugin will do other things for you. If your dot file has syntax errors, the plugin will give you some messages.
 
 # Features
 
 * Real-time rendering
 * Real-time syntax checking
 * Error message prompting
+* Support specifying layout engine
+* Support specifying output format
 
 # Usage
 
@@ -22,17 +24,25 @@
 
 `ctrl+shift+x` or `Tools -> Graphvizer -> Show Graphvizer Panel`
 
-![ctrl+shift+g to open the Graphvizer panel](gif/graphvizer-panel.gif)
+![ctrl+shift+x to open the Graphvizer panel](gif/graphvizer-panel.gif)
+
+### Specifying layout engine
+
+The default layout engine is `dot` which can be changed in settings. You can also change it for a specific file through `Tools->Graphvizer->Layout Engine`.
+
+### Specifying output format
+
+The default output format is `png` which can be changed in settings. You can also change it for a specific file through `Tools->Graphvizer->Output Format`.
 
 ### Powerful image viewer
 
-If you think viewing image in Sublime Text is very inconvenient because it doesn't support zoom or pan. You can try [Graphvizer Viewer](https://github.com/hao-lee/GraphvizerViewer) which is created as a supplement for Graphvizer.
+If you think viewing image in Sublime Text is very inconvenient because it doesn't support zooming or panning. You can try [Graphvizer Viewer](https://github.com/hao-lee/GraphvizerViewer) which is created as a supplement for Graphvizer.
 
 ![GraphvizerViewer](gif/graphvizerviewer.gif)
 
 # Why do I create this plugin?
 
-`Graphviz` is an awesome visualization tool, but it's very inconvenient to write a dot file by hand. I have to use `dot file.dot -Tpng -o file.png` to render image manually again and again and I don't know whether the syntax is correct or not instantly. `Atom` editor has an excellent plugin called `GraphViz preview+`, but I can't find any plugins like this on `packagecontrol.io`. Finally, I create `Graphvizer`.
+`Graphviz` is an awesome visualization tool, but it's very inconvenient to render images manually. I have to run `dot file.dot -Tpng -o file.png` again and again. Besides, I don't know whether the syntax is correct or not instantly. `Atom` editor has an excellent plugin called `GraphViz preview+`, but I can't find any plugins like this on `packagecontrol.io`. Finally, I create `Graphvizer`.
 
 # Installation
 
@@ -59,7 +69,7 @@ Download from here: https://graphviz.gitlab.io/download/. The installation is ve
 
 > Type `dot -V` in Windows `cmd` window and hit enter. If everything is OK, you will see the version info of `Graphviz`.
 
-**Method 2:** Specify the path of `dot` explicitly with plugin settings file. See the full details in [Configurations](#configurations) part.
+**Method 2:** Specify the path of `dot` explicitly in plugin settings. See the full details in [Configurations](#configurations) part.
 
 ## 2. Installing `Graphvizer`
 
@@ -74,6 +84,10 @@ Bring up the Command Palette (`Control+Shift+P` on Linux/Windows, `Command+Shift
 `git clone` this project to your system or just download the zip file from GitHub and decompress it. Now you have got the `Graphvizer` directory.
 
 Using the Sublime Text 3 menu `Preferences -> Browse Packages...` to find out your package directory path. On my `Windows 7`, the path is `D:\Sublime Text 3\Data\Packages`. Move the entire `Graphvizer` directory into the package directory. Press `Ctrl+Shift+P` in Sublime and run `Satisfy Dependencies`. Restart Sublime. Done!
+
+## 3. Upgrade
+
+I will release a new version if someone reports a bug or if I have a new idea. You can use Package Control to upgrade this package.
 
 ---
 
