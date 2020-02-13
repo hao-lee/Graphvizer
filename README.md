@@ -170,7 +170,7 @@ By default, this plugin uses `dot` engine to render images just as you pass `-Kd
 
 # Key Bindings
 
-You can get key binding configurations through _Preferences -> Package Settings -> Graphvizer -> Key Bindings - Default._ The below example is for Windows. If you want to change the default key bindings, open _Preference -> Package Settings -> Graphvizer -> Key Bindings - User_ and paste the default configurations into it. Save it after changing <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd> or <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd> to other shortcuts, according to your needs.
+You can get key binding configurations through _Preferences -> Package Settings -> Graphvizer -> Key Bindings - Default._ The below example is for Windows. If you want to change the default key bindings, open _Preference -> Package Settings -> Graphvizer -> Key Bindings - User_ and paste the default configurations into it. Save it after changing `"keys"` to other shortcuts, according to your needs.
 
 ``` jsonc
 [
