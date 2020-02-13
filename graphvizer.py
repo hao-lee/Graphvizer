@@ -158,6 +158,7 @@ class CoreListener(sublime_plugin.EventListener):
 								"so the image filename has been changed according to the filename. "\
 								"Please close temp~.png and reopen image again using keyboard shortcuts or menus.")
 			view.settings().set("persistence", True)
+			self.rendering(view)
 
 		# If `render_in_realtime` is enabled, we don't need to render on save as this
 		# has been done in on_modified().
