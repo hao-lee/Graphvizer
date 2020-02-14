@@ -29,7 +29,6 @@ class SetOutputFormatCommand(sublime_plugin.TextCommand):
 			return False
 
 	def is_enabled(self):
-		return True
 		if self.view.settings().get("syntax") == "Packages/Graphviz/DOT.sublime-syntax":
 			return True
 		else:
