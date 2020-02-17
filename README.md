@@ -160,11 +160,11 @@ By default, the value of `"image_dir"` is `"same"` which means the generated ima
 Example for Windows: `"E:\\homework\\image\\"`
 Example for Linux/OSX: `"/home/haolee/image/"`
 
-## Render the image when the file is saved
+### Render the image when the file is saved
 
 By default, the image is rendered in real time. If you only want the image to be rendered when the file is saved, you can set `"render_in_realtime"` to `false`.
 
-## Set the default layout engine
+### Set the default layout engine
 
 By default, this plugin uses `dot` engine to render images just as you pass `-Kdot` argument to `dot` command. If you want to use other engines including `neato`, `fdp`, `sfdp`, `twopi` and `circo`, set `"default_layout_engine"` to the engine name.
 
