@@ -168,6 +168,10 @@ By default, the image is rendered in real time. If you only want the image to be
 
 By default, this plugin uses `dot` engine to render images just as you pass `-Kdot` argument to `dot` command. If you want to use other engines including `neato`, `fdp`, `sfdp`, `twopi` and `circo`, set `"default_layout_engine"` to the engine name.
 
+### Set the default output format
+
+By default, the output format is `png` just as you pass `-Tpng` argument to `dot` command. If you want to use other formats including `png`, `jpg`, `svg`, `pdf`, `gif`, `bmp`, `ps`, `ps2` and `psd`, set `"default_output_format"` to the format name.
+
 # Key Bindings
 
 You can get key binding configurations through _Preferences -> Package Settings -> Graphvizer -> Key Bindings - Default._ The below example is for Windows. If you want to change the default key bindings, open _Preference -> Package Settings -> Graphvizer -> Key Bindings - User_ and paste the default configurations into it. Save it after changing `"keys"` to other shortcuts, according to your needs.
