@@ -215,6 +215,7 @@ You can get key binding configurations through _Preferences -> Package Settings 
 - [x] Save the image in the same directory as the dot file by default
 - [x] Set cwd for dot command to support shapefile attribute
 - [ ] Integrate GraphvizerViewer with Graphvizer
+- [ ] [Extend dot language grammar](https://github.com/hao-lee/Graphvizer/issues/17#issuecomment-586698292) to support variable definition, loop and if-else statements.
 * For other features, please open an issue.
 
 # LICENSE
