@@ -117,9 +117,9 @@ class CoreListener(sublime_plugin.EventListener):
 				process.kill()
 				stdout, stderr = process.communicate()
 			if len(stdout) != 0:
-				self.print(stdout)
+				self.print(stdout.decode().strip())
 			if len(stderr) != 0:
-				self.print(stderr)
+				self.print(stderr.decode().strip())
 
 	def rendering(self, view):
 		self.lock.acquire()

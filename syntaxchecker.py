@@ -36,7 +36,7 @@ def check(dot):
 
 	try:
 		tree = parser.graph()
-		return True, "No error occurred"
+		return True, "Syntax check passed"
 	except Exception as e:
 		return False, str(e)
 
