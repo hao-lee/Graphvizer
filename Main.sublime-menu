@@ -63,47 +63,23 @@
 						"children":
 						[
 							{
-								"caption": "Settings – Default",
-								"command": "open_file",
-								"args": {"file": "${packages}/Graphvizer/Graphvizer.sublime-settings"}
-							},
-							{
-								"caption": "Settings – User",
-								"command": "open_file",
-								"args": {"file": "${packages}/User/Graphvizer.sublime-settings"}
+								"caption": "Settings",
+								"command": "edit_settings",
+								"args": {
+									"base_file": "${packages}/Graphvizer/Graphvizer.sublime-settings",
+									"default": "// Settings in here override those in the left side\n\n{\n\t$0\n}\n"
+								}
 							},
 							{
 								"caption": "-"
 							},
 							{
-								"caption": "Key Bindings – Default",
-								"command": "open_file",
-								"args": {"file": "${packages}/Graphvizer/Default (Linux).sublime-keymap", "platform": "Linux"}
-							},
-							{
-								"caption": "Key Bindings – Default",
-								"command": "open_file",
-								"args": {"file": "${packages}/Graphvizer/Default (Windows).sublime-keymap", "platform": "Windows"}
-							},
-							{
-								"caption": "Key Bindings – Default",
-								"command": "open_file",
-								"args": {"file": "${packages}/Graphvizer/Default (OSX).sublime-keymap", "platform": "OSX"}
-							},
-							{
-								"caption": "Key Bindings – User",
-								"command": "open_file",
-								"args": {"file": "${packages}/User/Default (Linux).sublime-keymap", "platform": "Linux"}
-							},
-							{
-								"caption": "Key Bindings – User",
-								"command": "open_file",
-								"args": {"file": "${packages}/User/Default (Windows).sublime-keymap", "platform": "Windows"}
-							},
-							{
-								"caption": "Key Bindings – User",
-								"command": "open_file",
-								"args": {"file": "${packages}/User/Default (OSX).sublime-keymap", "platform": "OSX"}
+								"caption": "Key Bindings",
+								"command": "edit_settings",
+								"args": {
+									"base_file": "${packages}/Graphvizer/Default ($platform).sublime-keymap",
+									"default": "// Key Bindings in here override those in the left side\n\n[\n\t$0\n]\n"
+								}
 							}
 						]
 					}

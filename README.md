@@ -93,7 +93,7 @@ I will release a new version if someone reports a bug or if I have a new idea. Y
 
 # Configurations
 
-The default configurations are as follows. If you want to change some configuration, open _Preferences -> Package Settings -> Graphvizer -> Settings - User_ and paste the following content to the opened file. Save it after modifying it according to your needs. The meaning of each configuration is explained below.
+The default configurations are as follows. If you want to change some configuration, open _Preferences -> Package Settings -> Graphvizer -> Settings_ and add configuration in the right side content according to your needs. The meaning of each configuration is explained below.
 
 ``` jsonc
 {
@@ -174,7 +174,7 @@ By default, the output format is `png` just as you pass `-Tpng` argument to `dot
 
 # Key Bindings
 
-You can get key binding configurations through _Preferences -> Package Settings -> Graphvizer -> Key Bindings - Default._ The below example is for Windows. If you want to change the default key bindings, open _Preference -> Package Settings -> Graphvizer -> Key Bindings - User_ and paste the default configurations into it. Save it after changing `"keys"` to other shortcuts, according to your needs.
+You can change the default key bindings through _Preferences -> Package Settings -> Graphvizer -> Key Bindings_. In the right side column of the opened window, set `"keys"` to other shortcuts according to your needs. The below example is for Windows.
 
 ``` jsonc
 [
