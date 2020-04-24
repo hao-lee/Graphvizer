@@ -44,4 +44,3 @@ class ATNSimulator(object):
             return context
         visited = dict()
         return getCachedPredictionContext(context, self.sharedContextCache, visited)
-

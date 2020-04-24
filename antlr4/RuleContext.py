@@ -225,4 +225,3 @@ class RuleContext(RuleNode):
 
             buf.write("]")
             return buf.getvalue()
-

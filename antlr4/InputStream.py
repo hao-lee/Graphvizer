@@ -101,4 +101,3 @@ class TestInputStream(unittest.TestCase):
         self.assertEqual("bcd", stream.getText(1, 3))
         stream.reset()
         self.assertEqual(0, stream.index)
-

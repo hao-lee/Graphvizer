@@ -130,4 +130,3 @@ class DFA(object):
         from ..dfa.DFASerializer import LexerDFASerializer
         serializer = LexerDFASerializer(self)
         return str(serializer)
-

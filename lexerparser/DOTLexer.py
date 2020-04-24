@@ -1,8 +1,9 @@
-# Generated from DOT.g4 by ANTLR 4.7
+# Generated from DOT.g4 by ANTLR 4.8
 from ..antlr4 import *
 from io import StringIO
 from typing.io import TextIO
 import sys
+
 
 
 def serializedATN():
@@ -149,27 +150,25 @@ class DOTLexer(Lexer):
     modeNames = [ "DEFAULT_MODE" ]
 
     literalNames = [ "<INVALID>",
-            "'{'", "'}'", "';'", "'='", "'['", "']'", "','", "'->'", "'--'", 
+            "'{'", "'}'", "';'", "'='", "'['", "']'", "','", "'->'", "'--'",
             "':'" ]
 
     symbolicNames = [ "<INVALID>",
-            "STRICT", "GRAPH", "DIGRAPH", "NODE", "EDGE", "SUBGRAPH", "NUMBER", 
-            "STRING", "ID", "HTML_STRING", "COMMENT", "LINE_COMMENT", "PREPROC", 
+            "STRICT", "GRAPH", "DIGRAPH", "NODE", "EDGE", "SUBGRAPH", "NUMBER",
+            "STRING", "ID", "HTML_STRING", "COMMENT", "LINE_COMMENT", "PREPROC",
             "WS" ]
 
-    ruleNames = [ "T__0", "T__1", "T__2", "T__3", "T__4", "T__5", "T__6", 
-                  "T__7", "T__8", "T__9", "STRICT", "GRAPH", "DIGRAPH", 
-                  "NODE", "EDGE", "SUBGRAPH", "NUMBER", "DIGIT", "STRING", 
-                  "ID", "LETTER", "HTML_STRING", "TAG", "COMMENT", "LINE_COMMENT", 
+    ruleNames = [ "T__0", "T__1", "T__2", "T__3", "T__4", "T__5", "T__6",
+                  "T__7", "T__8", "T__9", "STRICT", "GRAPH", "DIGRAPH",
+                  "NODE", "EDGE", "SUBGRAPH", "NUMBER", "DIGIT", "STRING",
+                  "ID", "LETTER", "HTML_STRING", "TAG", "COMMENT", "LINE_COMMENT",
                   "PREPROC", "WS" ]
 
     grammarFileName = "DOT.g4"
 
     def __init__(self, input=None, output:TextIO = sys.stdout):
         super().__init__(input, output)
-        self.checkVersion("4.7")
+        self.checkVersion("4.8")
         self._interp = LexerATNSimulator(self, self.atn, self.decisionsToDFA, PredictionContextCache())
         self._actions = None
         self._predicates = None
-
-

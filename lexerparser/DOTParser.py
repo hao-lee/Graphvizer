@@ -1,9 +1,13 @@
-# Generated from DOT.g4 by ANTLR 4.7
+# Generated from DOT.g4 by ANTLR 4.8
 # encoding: utf-8
 from ..antlr4 import *
 from io import StringIO
-from typing.io import TextIO
 import sys
+if sys.version_info[1] > 5:
+	from typing import TextIO
+else:
+	from typing.io import TextIO
+
 
 def serializedATN():
     with StringIO() as buf:
@@ -62,14 +66,14 @@ class DOTParser ( Parser ):
 
     sharedContextCache = PredictionContextCache()
 
-    literalNames = [ "<INVALID>", "'{'", "'}'", "';'", "'='", "'['", "']'", 
+    literalNames = [ "<INVALID>", "'{'", "'}'", "';'", "'='", "'['", "']'",
                      "','", "'->'", "'--'", "':'" ]
 
-    symbolicNames = [ "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                      "<INVALID>", "<INVALID>", "<INVALID>", "STRICT", "GRAPH", 
-                      "DIGRAPH", "NODE", "EDGE", "SUBGRAPH", "NUMBER", "STRING", 
-                      "ID", "HTML_STRING", "COMMENT", "LINE_COMMENT", "PREPROC", 
+    symbolicNames = [ "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
+                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
+                      "<INVALID>", "<INVALID>", "<INVALID>", "STRICT", "GRAPH",
+                      "DIGRAPH", "NODE", "EDGE", "SUBGRAPH", "NUMBER", "STRING",
+                      "ID", "HTML_STRING", "COMMENT", "LINE_COMMENT", "PREPROC",
                       "WS" ]
 
     RULE_graph = 0
@@ -87,8 +91,8 @@ class DOTParser ( Parser ):
     RULE_subgraph = 12
     RULE_id = 13
 
-    ruleNames =  [ "graph", "stmt_list", "stmt", "attr_stmt", "attr_list", 
-                   "a_list", "edge_stmt", "edgeRHS", "edgeop", "node_stmt", 
+    ruleNames =  [ "graph", "stmt_list", "stmt", "attr_stmt", "attr_list",
+                   "a_list", "edge_stmt", "edgeRHS", "edgeop", "node_stmt",
                    "node_id", "port", "subgraph", "id" ]
 
     EOF = Token.EOF
@@ -119,9 +123,10 @@ class DOTParser ( Parser ):
 
     def __init__(self, input:TokenStream, output:TextIO = sys.stdout):
         super().__init__(input, output)
-        self.checkVersion("4.7")
+        self.checkVersion("4.8")
         self._interp = ParserATNSimulator(self, self.atn, self.decisionsToDFA, self.sharedContextCache)
         self._predicates = None
+
 
 
 
@@ -206,6 +211,7 @@ class DOTParser ( Parser ):
             self.exitRule()
         return localctx
 
+
     class Stmt_listContext(ParserRuleContext):
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
@@ -265,6 +271,7 @@ class DOTParser ( Parser ):
         finally:
             self.exitRule()
         return localctx
+
 
     class StmtContext(ParserRuleContext):
 
@@ -360,6 +367,7 @@ class DOTParser ( Parser ):
             self.exitRule()
         return localctx
 
+
     class Attr_stmtContext(ParserRuleContext):
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
@@ -417,6 +425,7 @@ class DOTParser ( Parser ):
             self.exitRule()
         return localctx
 
+
     class Attr_listContext(ParserRuleContext):
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
@@ -451,7 +460,7 @@ class DOTParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 66 
+            self.state = 66
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while True:
@@ -467,7 +476,7 @@ class DOTParser ( Parser ):
 
                 self.state = 65
                 self.match(DOTParser.T__5)
-                self.state = 68 
+                self.state = 68
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 if not (_la==DOTParser.T__4):
@@ -480,6 +489,7 @@ class DOTParser ( Parser ):
         finally:
             self.exitRule()
         return localctx
+
 
     class A_listContext(ParserRuleContext):
 
@@ -515,7 +525,7 @@ class DOTParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 78 
+            self.state = 78
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while True:
@@ -539,7 +549,7 @@ class DOTParser ( Parser ):
                     self.match(DOTParser.T__6)
 
 
-                self.state = 80 
+                self.state = 80
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 if not ((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << DOTParser.NUMBER) | (1 << DOTParser.STRING) | (1 << DOTParser.ID) | (1 << DOTParser.HTML_STRING))) != 0)):
@@ -552,6 +562,7 @@ class DOTParser ( Parser ):
         finally:
             self.exitRule()
         return localctx
+
 
     class Edge_stmtContext(ParserRuleContext):
 
@@ -628,6 +639,7 @@ class DOTParser ( Parser ):
             self.exitRule()
         return localctx
 
+
     class EdgeRHSContext(ParserRuleContext):
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
@@ -676,7 +688,7 @@ class DOTParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 95 
+            self.state = 95
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while True:
@@ -696,7 +708,7 @@ class DOTParser ( Parser ):
                 else:
                     raise NoViableAltException(self)
 
-                self.state = 97 
+                self.state = 97
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 if not (_la==DOTParser.T__7 or _la==DOTParser.T__8):
@@ -709,6 +721,7 @@ class DOTParser ( Parser ):
         finally:
             self.exitRule()
         return localctx
+
 
     class EdgeopContext(ParserRuleContext):
 
@@ -752,6 +765,7 @@ class DOTParser ( Parser ):
         finally:
             self.exitRule()
         return localctx
+
 
     class Node_stmtContext(ParserRuleContext):
 
@@ -806,6 +820,7 @@ class DOTParser ( Parser ):
             self.exitRule()
         return localctx
 
+
     class Node_idContext(ParserRuleContext):
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
@@ -858,6 +873,7 @@ class DOTParser ( Parser ):
         finally:
             self.exitRule()
         return localctx
+
 
     class PortContext(ParserRuleContext):
 
@@ -914,6 +930,7 @@ class DOTParser ( Parser ):
         finally:
             self.exitRule()
         return localctx
+
 
     class SubgraphContext(ParserRuleContext):
 
@@ -983,6 +1000,7 @@ class DOTParser ( Parser ):
             self.exitRule()
         return localctx
 
+
     class IdContext(ParserRuleContext):
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
@@ -1036,8 +1054,3 @@ class DOTParser ( Parser ):
         finally:
             self.exitRule()
         return localctx
-
-
-
-
-

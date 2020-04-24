@@ -173,7 +173,7 @@ class IntervalSet(object):
         elif a==Token.EPSILON:
             return "<EPSILON>"
         else:
-            if a<len(literalNames):
+            if a<len(literalNames) and literalNames[a] != "<INVALID>":
                 return literalNames[a]
             if a<len(symbolicNames):
                 return symbolicNames[a]
@@ -278,5 +278,3 @@ class TestIntervalSet(unittest.TestCase):
         self.assertTrue(100 in c)
         self.assertTrue(10 not in c)
         self.assertTrue(20 not in c)
-
-

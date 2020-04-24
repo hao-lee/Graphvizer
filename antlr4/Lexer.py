@@ -318,4 +318,3 @@ class Lexer(Recognizer, TokenSource):
             else:
                 # TODO: Do we lose character or line position information?
                 self._input.consume()
-

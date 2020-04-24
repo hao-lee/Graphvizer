@@ -620,4 +620,3 @@ def getAllContextNodes(context:PredictionContext, nodes:list=None, visited:dict=
         for i in range(0, len(context)):
             getAllContextNodes(context.getParent(i), nodes, visited)
         return nodes
-
