@@ -46,6 +46,5 @@ if __name__ == '__main__':
 	a->b;
 	}
 	'''
-	res = check(dot)
-	if res:
-		print("No error")
+	res, log = check(dot)
+	print(log)

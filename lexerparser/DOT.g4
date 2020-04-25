@@ -143,7 +143,7 @@ fragment DIGIT
 
 
 fragment LETTER
-   : [a-zA-Z\u0080-\u00FF_]
+   : [a-zA-Z_\u0080-\u00FF\u4e00-\u9fa5]
    ;
 
 
