@@ -13,6 +13,7 @@ from .command import *
 from .lib import *
 
 
+print(f"Graphvizer runtime env: ST {sublime.version()}, Py {sys.version}")
 st_settings = None
 def plugin_loaded():
 	global st_settings
